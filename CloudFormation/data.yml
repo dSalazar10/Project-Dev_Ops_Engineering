@@ -61,3 +61,7 @@ Outputs:
     BucketName:
         Value: !Ref 'S3Bucket'
         Description: Name of the Amazon S3 bucket used to store image files.
+    DBAddress:
+        Value: !GetAtt [PostgresDB, Endpoint.Address]
+        Description: Returns the connection endpoint for the database
+    
