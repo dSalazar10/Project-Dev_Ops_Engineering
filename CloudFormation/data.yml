@@ -1,0 +1,22 @@
+Parameters:
+    EnvironmentName:
+        Description: An environment name that will be prefixed to resource names
+        Type: String
+    
+Resources:
+    # Only the Ionic Web App and REST API are allowed to access this DB
+    S3Bucket:
+        Type: AWS::S3::Bucket
+        Properties:
+            CorsConfiguration:
+                CorsRules:
+                - AllowedHeaders: ['*']
+                  AllowedMethods: [GET, POST, PUT, DELETE, HEAD]
+                  AllowedOrigins: ['*']
+                  MaxAge: '3600'
+
+
+Outputs:
+    BucketName:
+        Value: !Ref 'S3Bucket'
+        Description: Name of the Amazon S3 bucket used to store image files.
