@@ -2,9 +2,6 @@ Parameters:
     EnvironmentName:
         Description: An environment name that will be prefixed to resource names
         Type: String
-    PostgresDBName:
-        Description: The name of the Database
-        Type: String
     DBUsername:
         NoEcho: 'true'
         Description: Username for PostgresSQL database access
@@ -22,31 +19,7 @@ Parameters:
         AllowedPattern: '[a-zA-Z0-9]*'
         ConstraintDescription: must contain only alphanumeric characters.
 Resources:
-    PostgresDBSecurityGroup:
-        Type: AWS::EC2::SecurityGroup
-        Properties: 
-            # A description for the security group
-            # String
-            GroupDescription: Allow http to/from our elastic load balancer
-            # The name of the security group
-            # GroupName: String
-            # The inbound rules associated with the security group
-            SecurityGroupIngress: 
-            - IpProtocol: tcp
-            FromPort: 5432
-            ToPort: 5432
-            CidrIp: 0.0.0.0/0
-            # Any tags assigned to the security group
-            #Tags: 
-            #  - Tag
-            # The ID of the VPC for the security group
-            # String
-            VpcId: 
-                Fn::ImportValue:
-                    !Sub "${EnvironmentName}-VPCID"
-
-
-    PostgresDBSubnetGroup: 
+    DBSubnetGroup: 
         Type: "AWS::RDS::DBSubnetGroup"
         Properties: 
             DBSubnetGroupDescription: This associates the two private subnets with the RDS DB
@@ -60,18 +33,16 @@ Resources:
     # Only the Ionic Web App and REST API are allowed to access this DB
     PostgresDB:
         Type: AWS::RDS::DBInstance
-        DependsOn: PostgresDBSubnetGroup
+        DependsOn: DBSubnetGroup
         Properties:
-            DBSecurityGroups:
-                - Ref: PostgresDBSecurityGroup
-            DBSubnetGroupName: !Ref PostgresDBSubnetGroup
+            DBSubnetGroupName: !Ref DBSubnetGroup
             AllocatedStorage: '20'
             DBInstanceClass: db.t2.micro
             Engine: postgres
-            DBInstanceIdentifier: !Ref PostgresDBName
-            MasterUsername: ${DBUserName}
-            MasterUserPassword: ${DBPassword}
-            DBName: !Sub "${EnvironmentName}-RDS"
+            MasterUsername: 
+                Ref: DBUsername
+            MasterUserPassword: 
+                Ref: DBPassword
 
 
     # Access to the bucket will be with Signed URLs only

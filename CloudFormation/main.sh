@@ -71,12 +71,18 @@ function SetupStack {
     echo "~~~~~~~~~~~~~"
     echo ""
     echo "Select from the following options:"
-    echo "1) Data Resources"
+    echo "1) Network Stack"
+    echo "2) Data Stack"
     echo "~:"
     read choice
     case $choice in
         1)
-            stackname="DataResources"
+            stackname="NetworkStack"
+            tempfile="network.yml"
+            paramfile="network-parameters.json"
+            ;;
+        2)
+            stackname="DataStack"
             tempfile="data.yml"
             paramfile="data-parameters.json"
             ;;

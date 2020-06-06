@@ -4,15 +4,11 @@
 		"ParameterValue": "UdagramDEV"
     },
     {
-		"ParameterKey": "PostgresDBName",
-		"ParameterValue": "udagramdb"
-    },
-    {
       "ParameterKey": "DBUsername",
-		  "ParameterValue": "admin"
+		  "ParameterValue": "MyAdminUser"
     },
     {
       "ParameterKey": "DBPassword",
-		  "ParameterValue": "password123"
+		  "ParameterValue": "PassWord123"
     }
 ]
