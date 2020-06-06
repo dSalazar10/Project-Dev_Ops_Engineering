@@ -2,5 +2,17 @@
     {
 		"ParameterKey": "EnvironmentName",
 		"ParameterValue": "UdagramDEV"
+    },
+    {
+		"ParameterKey": "PostgresDBName",
+		"ParameterValue": "udagramdb"
+    },
+    {
+      "ParameterKey": "DBUsername",
+		  "ParameterValue": "admin"
+    },
+    {
+      "ParameterKey": "DBPassword",
+		  "ParameterValue": "password123"
     }
 ]
