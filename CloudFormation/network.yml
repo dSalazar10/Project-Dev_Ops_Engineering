@@ -469,3 +469,9 @@ Outputs:
     Value: !Ref NetworkLB
     Export:
         Name: !Sub ${EnvironmentName}-LB
+
+  LoadBalancerDNS:
+    Description: The URL of the LoadBalancer
+    Value: !GetAtt [NetworkLB, DNSName]
+    Export:
+      Name: !Sub ${EnvironmentName}-LB-DNS
