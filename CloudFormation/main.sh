@@ -99,7 +99,7 @@ function SetupStack {
             tempfile="bastion.yml"
             paramfile="bastion-parameters.json"
             ;;
-        3)
+        5)
             stackname="JenkinsStack"
             tempfile="jenkins.yml"
             paramfile="jenkins-parameters.json"

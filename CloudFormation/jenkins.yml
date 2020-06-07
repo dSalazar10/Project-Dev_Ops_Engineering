@@ -221,7 +221,8 @@ Resources:
           Ref: JenkinsTargetGroup
       # The Amazon Resource Name (ARN) of the load balancer
       LoadBalancerArn:
-        Ref: JenkinsLB
+        Fn::ImportValue:
+          Fn::Sub: "${EnvironmentName}-LB"
       # The port on which the load balancer is listening
       Port: '80'
       # The protocol for connections from clients to the load balancer
