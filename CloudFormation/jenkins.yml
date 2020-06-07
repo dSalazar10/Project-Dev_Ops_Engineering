@@ -1,9 +1,52 @@
+Description:
+  Daniel Salazar | June 2020
+  This will create an EC2 instance and install Jenkins. The security group's CIDR IP should be changed to the IP of
+  the dev computer. This is used as an automation server to automate the tasks associated with CI/CD. 
+  
 Parameters:
   EnvironmentName:
     Description: An environment name that will be prefixed to resource names
     Type: String
 
+
 Resources:
+  ELBSecGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      # A description for the security group
+      # String
+      GroupDescription: Allow http to/from our elastic load balancer
+      # The name of the security group
+      #GroupName: String
+      # The outbound rules associated with the security group
+      SecurityGroupEgress: 
+      - IpProtocol: tcp
+        FromPort: 8080
+        ToPort: 8080
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      # The inbound rules associated with the security group
+      SecurityGroupIngress: 
+      - IpProtocol: tcp
+        FromPort: 8080
+        ToPort: 8080
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 80
+        ToPort: 80
+        CidrIp: 0.0.0.0/0
+      # Any tags assigned to the security group
+      #Tags: 
+      #  - Tag
+      # The ID of the VPC for the security group
+      # String
+      VpcId: 
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-VPCID"
+      
   JenkinsSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties: 
@@ -221,8 +264,7 @@ Resources:
           Ref: JenkinsTargetGroup
       # The Amazon Resource Name (ARN) of the load balancer
       LoadBalancerArn:
-        Fn::ImportValue:
-          Fn::Sub: "${EnvironmentName}-LB"
+        Ref: JenkinsLB
       # The port on which the load balancer is listening
       Port: '80'
       # The protocol for connections from clients to the load balancer
@@ -251,3 +293,39 @@ Resources:
       #ListenerArn: String
       # The rule priority. A listener can't have multiple rules with the same priority
       #Priority: Integer
+
+  JenkinsLB:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties: 
+      # The IP address type
+      #IpAddressType: String
+      # The load balancer attributes
+      #LoadBalancerAttributes: 
+      #  - LoadBalancerAttribute
+      # he name of the load balancer
+      #Name: String
+      # The nodes of an Internet-facing load balancer have public IP addresses
+      # The nodes of an internal load balancer have only private IP addresses
+      #Scheme: String
+      # The IDs of the security groups for the load balancer
+      SecurityGroups:
+      - Ref: ELBSecGroup
+      # The IDs of the public subnets
+      #SubnetMappings: 
+      #  - SubnetMapping
+      # The IDs of the subnets
+      Subnets:
+      - Fn::ImportValue: !Sub "${EnvironmentName}-PUB1-SN"
+      - Fn::ImportValue: !Sub "${EnvironmentName}-PUB2-SN"
+      # One or more tags to assign to the load balancer
+      #Tags: 
+      #  - Tag
+      # The type of load balancer
+      #Type: String
+
+Outputs:
+  LoadBalancerDNS:
+    Description: The URL of the LoadBalancer
+    Value: !GetAtt [JenkinsLB, DNSName]
+    Export:
+      Name: !Sub ${EnvironmentName}-LB-DNS
