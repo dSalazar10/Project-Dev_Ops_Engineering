@@ -73,6 +73,7 @@ function SetupStack {
     echo "Select from the following options:"
     echo "1) Network Stack"
     echo "2) Data Stack"
+    echo "3) IAM Stack"
     echo "~:"
     read choice
     case $choice in
@@ -85,6 +86,11 @@ function SetupStack {
             stackname="DataStack"
             tempfile="data.yml"
             paramfile="data-parameters.json"
+            ;;
+        3)
+            stackname="IAMStack"
+            tempfile="iam.yml"
+            paramfile="iam-parameters.json"
             ;;
     esac
 }

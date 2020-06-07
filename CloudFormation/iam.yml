@@ -1,0 +1,57 @@
+Parameters:
+    IAMPassword:
+        NoEcho: 'true'
+        Type: String
+        Description: New account password
+        MinLength: '1'
+        MaxLength: '41'
+        ConstraintDescription: the password must be between 1 and 41 characters
+
+Resources:
+    IAMPolicy:
+        Type: AWS::IAM::Policy
+        Properties:
+            Groups:
+                - !Ref IAMGroup
+            # The friendly name (not ARN) identifying the policy
+            PolicyName: IAMUsers
+            # Adds full access to S3
+            PolicyDocument:
+                Version: 2012-10-17
+                Statement:
+                - Effect: Allow
+                  Action: s3:*
+                  Resource: '*'
+
+    IAMUser:
+        Type: AWS::IAM::User
+        Properties:
+            # Creates a password for the specified user, giving the user the
+            # ability to access AWS services through the AWS Management Console
+            LoginProfile:
+                Password: !Ref 'IAMPassword'
+        
+    IAMGroup:
+        Type: AWS::IAM::Group
+
+    IAMUsers:
+        Type: AWS::IAM::UserToGroupAddition
+        Properties:
+            # The name of the group to update
+            GroupName: !Ref 'IAMGroup'
+            # A list of the names of the users that you want to add to the group
+            Users: 
+            - !Ref 'IAMUser'
+
+    IAMKeys:
+        Type: AWS::IAM::AccessKey
+        Properties:
+            UserName: !Ref 'IAMUser'
+
+Outputs:
+    AccessKey:
+        Value: !Ref 'IAMKeys'
+        Description: AWSAccessKeyId of  user
+    SecretKey:
+        Value: !GetAtt [IAMKeys, SecretAccessKey]
+        Description: AWSSecretAccessKey of  user

@@ -22,12 +22,12 @@ Resources:
     DBSubnetGroup: 
         Type: "AWS::RDS::DBSubnetGroup"
         Properties: 
-            DBSubnetGroupDescription: This associates the two private subnets with the RDS DB
+            DBSubnetGroupDescription: This associates the two public subnets with the RDS DB
             SubnetIds: 
                 - Fn::ImportValue:
-                    !Sub "${EnvironmentName}-PRI1-SN"
+                    !Sub "${EnvironmentName}-PUB1-SN"
                 - Fn::ImportValue:
-                    !Sub "${EnvironmentName}-PRI2-SN"
+                    !Sub "${EnvironmentName}-PUB2-SN"
 
 
     # Only the Ionic Web App and REST API are allowed to access this DB
@@ -35,6 +35,7 @@ Resources:
         Type: AWS::RDS::DBInstance
         DependsOn: DBSubnetGroup
         Properties:
+            DBName: udagramdb
             DBSubnetGroupName: !Ref DBSubnetGroup
             AllocatedStorage: '20'
             DBInstanceClass: db.t2.micro
@@ -56,7 +57,6 @@ Resources:
                   AllowedOrigins: ['*']
                   MaxAge: '3600'
 
-
 Outputs:
     BucketName:
         Value: !Ref 'S3Bucket'
@@ -64,4 +64,3 @@ Outputs:
     DBAddress:
         Value: !GetAtt [PostgresDB, Endpoint.Address]
         Description: Returns the connection endpoint for the database
-    
