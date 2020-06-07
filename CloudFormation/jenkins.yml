@@ -1,0 +1,252 @@
+Parameters:
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+Resources:
+  JenkinsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties: 
+      # A description for the security group
+      # String
+      GroupDescription: Allow ssh to/from our Jenkins Server
+      # The name of the security group
+      # GroupName: String
+      # The outbound rules associated with the security group
+      SecurityGroupEgress: 
+      - IpProtocol: tcp
+        FromPort: 0
+        ToPort: 65535
+        CidrIp: 0.0.0.0/0
+      # The name of the security group
+      # GroupName: String
+      # The inbound rules associated with the security group
+      SecurityGroupIngress: 
+      - IpProtocol: tcp
+        FromPort: 8080
+        ToPort: 8080
+        CidrIp: 0.0.0.0/0
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
+      # Any tags assigned to the security group
+      #Tags: 
+      #  - Tag
+      # The ID of the VPC for the security group
+      # String
+      VpcId: 
+        Fn::ImportValue:
+          !Sub "${EnvironmentName}-VPCID"
+
+  JenkinsLaunchConfig:
+    Type: AWS::AutoScaling::LaunchConfiguration
+    Properties: 
+      #  specifies whether to assign a public IP address to the group's instances
+      #AssociatePublicIpAddress: Boolean
+      # Specifies how block devices are exposed to the instance
+      BlockDeviceMappings:
+        - DeviceName: "/dev/sdk"
+          Ebs:
+            VolumeSize: '10' #10GB
+      # The ID of a ClassicLink-enabled VPC to link your EC2-Classic instances to
+      #ClassicLinkVPCId: String
+      # The IDs of one or more security groups for the VPC that you specified in the ClassicLinkVPCId property
+      #ClassicLinkVPCSecurityGroups: 
+      #  - String
+      # Specifies whether the launch configuration is optimized for EBS I/O (true) or not (false)
+      #EbsOptimized: Boolean
+      # Provides the name or the Amazon Resource Name (ARN) of the instance profile associated with the IAM role for the instance
+      #IamInstanceProfile: JenkinsIAMInstanceProfile
+      # Provides the unique ID of the Amazon Machine Image (AMI) that was assigned during registration
+      ImageId: ami-003634241a8fcdec0
+      # The ID of the Amazon EC2 instance you want to use to create the launch configuration
+      #InstanceId: String
+      # Controls whether instances in this group are launched with detailed (true) or basic (false) monitoring
+      #InstanceMonitoring: Boolean
+      # Specifies the instance type of the EC2 instance. For information about available instance types
+      InstanceType: t2.micro
+      # Provides the ID of the kernel associated with the EC2 AMI
+      #KernelId: String
+      # Provides the name of the EC2 key pair
+      # Ideally you want to setup the server and not have to modify anything
+      # If it fails just destroy it and create a new one
+      KeyName: jenkins-key
+      # The name of the launch configuration
+      #LaunchConfigurationName: String
+      # The tenancy of the instance, either default or dedicated
+      #PlacementTenancy: String
+      # The ID of the RAM disk to select
+      #RamDiskId: String
+      # A list that contains the security groups to assign to the instances in the Auto Scaling group
+      SecurityGroups:
+        - Ref: JenkinsSecurityGroup
+      # The maximum hourly price to be paid for any Spot Instance launched to fulfill the request
+      #SpotPrice: String
+      # The Base64-encoded user data to make available to the launched EC2 instances
+      UserData:
+        Fn::Base64: !Sub |
+          #!/bin/bash
+          # Install Docker
+          sudo apt-get update
+          curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+          docker pull dsalazar10/udagram:jenkins
+          sudo docker run -p 8080:8080 dsalazar10/udagram:jenkins
+
+
+  JenkinsGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties: 
+      # The name of the Auto Scaling group
+      #AutoScalingGroupName: String
+      # A list of Availability Zones for the group
+      #AvailabilityZones: 
+      #  - String
+      # The amount of time, in seconds, after a scaling activity completes before another scaling activity can start
+      #Cooldown: String
+      # The desired capacity is the initial capacity of the Auto Scaling group at 
+      # the time of its creation and the capacity it attempts to maintain
+      #DesiredCapacity: String
+      # The amount of time, in seconds, that Amazon EC2 Auto Scaling waits before 
+      # checking the health status of an EC2 instance that has come into service
+      #HealthCheckGracePeriod: Integer
+      # The service to use for the health checks
+      #HealthCheckType: String
+      # The ID of the instance used to create a launch configuration for the group
+      #InstanceId: String
+      # The name of the launch configuration to use to launch instances
+      LaunchConfigurationName:
+        Ref: JenkinsLaunchConfig
+      # The EC2 launch template to use to launch instances
+      #LaunchTemplate: 
+      #  LaunchTemplateSpecification
+      # The lifecycle hooks for the group, which specify actions to perform
+      #  when Amazon EC2 Auto Scaling launches or terminates instances
+      #LifecycleHookSpecificationList: 
+      #  - LifecycleHookSpecification
+      # A list of Classic Load Balancers associated with this Auto Scaling group
+      #LoadBalancerNames: 
+      #  - String
+      # The maximum amount of time, in seconds, that an instance can be in service
+      #MaxInstanceLifetime: Integer
+      # The maximum size of the Auto Scaling group
+      MaxSize: '1'
+      # Enables the monitoring of group metrics of an Auto Scaling group
+      #MetricsCollection: 
+      #  - MetricsCollection
+      # The minimum size of the Auto Scaling group
+      MinSize: '1'
+      # An embedded object that specifies a mixed instances policy
+      #MixedInstancesPolicy: 
+      #  MixedInstancesPolicy
+      # Configures an Auto Scaling group to send notifications when specified events take place
+      #NotificationConfigurations: 
+      #  - NotificationConfiguration
+      # The name of an existing cluster placement group into which you want to launch your instances
+      #PlacementGroup: String
+      # The Amazon Resource Name (ARN) of the service-linked role that the
+      # Auto Scaling group uses to call other AWS services on your behalf
+      #ServiceLinkedRoleARN: String
+      # One or more tags
+      #Tags: 
+      #  - TagProperty
+      # A list of Amazon Resource Names (ARN) of target groups to associate with the Auto Scaling group
+      TargetGroupARNs:
+      - Ref: JenkinsTargetGroup
+      # A policy or a list of policies that are used to select the instances to terminate
+      #TerminationPolicies: 
+      #  - String
+      #  A list of subnet IDs for a virtual private cloud
+      VPCZoneIdentifier:
+      - Fn::ImportValue: 
+          !Sub "${EnvironmentName}-PRIV-NETS"
+
+  JenkinsTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties: 
+      # Indicates whether health checks are enabled
+      #HealthCheckEnabled: Boolean
+      # The approximate amount of time, in seconds, between health checks of an individual target
+      HealthCheckIntervalSeconds: 10
+      # The ping path that is the destination on the targets for health checks
+      HealthCheckPath: /
+      # The port the load balancer uses when performing health checks on targets
+      #HealthCheckPort: String
+      # The protocol the load balancer uses when performing health checks on targets
+      HealthCheckProtocol: HTTP
+      # The amount of time, in seconds, during which no response from a target means a failed health check
+      HealthCheckTimeoutSeconds: 8
+      # The number of consecutive health checks successes required before considering an unhealthy target healthy
+      HealthyThresholdCount: 2
+      # The HTTP codes to use when checking for a successful response from a target
+      #Matcher: 
+      #  Matcher
+      # This name must be unique per region per account, can have a maximum of #
+      # 32 characters, must contain only alphanumeric characters or hyphens, and
+      # must not begin or end with a hyphen
+      #Name: String
+      # The port on which the targets receive traffic
+      Port: 8080
+      # The protocol to use for routing traffic to the targets
+      Protocol: HTTP
+      # The tags
+      #Tags: 
+      #  - Tag
+      # The attributes
+      #TargetGroupAttributes: 
+      #  - TargetGroupAttribute
+      # The targets
+      #Targets: 
+      #  - TargetDescription
+      # The type of target that you must specify when registering targets with this target group
+      #TargetType: String
+      # The number of consecutive health check failures required before considering a target unhealthy
+      UnhealthyThresholdCount: 5
+      # The identifier of the virtual private cloud
+      VpcId: 
+        Fn::ImportValue:
+          Fn::Sub: "${EnvironmentName}-VPCID"
+
+  Listener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties: 
+      # The default SSL server certificate for a secure listener
+      #Certificates: 
+      #  - Certificate
+      # The actions for the default rule
+      DefaultActions:
+      - Type: forward
+        TargetGroupArn:
+          Ref: JenkinsTargetGroup
+      # The Amazon Resource Name (ARN) of the load balancer
+      LoadBalancerArn:
+        Ref: JenkinsLB
+      # The port on which the load balancer is listening
+      Port: '80'
+      # The protocol for connections from clients to the load balancer
+      Protocol: HTTP
+      # The security policy that defines which protocols and ciphers are supported
+      #SslPolicy: String
+
+  ALBListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties: 
+      # The rule must include exactly one of the following types of actions: 
+      # forward, fixed-response, or redirect, and it must be the last action to be performed
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref 'JenkinsTargetGroup'
+      Conditions:
+        - Field: path-pattern
+          Values: [/]
+      ListenerArn: !Ref 'Listener'
+      Priority: 1
+      # The rule can optionally include up to one of each of the following conditions: 
+      # http-request-method, host-header, path-pattern, and source-ip
+      #Conditions: 
+      #  - RuleCondition
+      # The Amazon Resource Name (ARN) of the listener
+      #ListenerArn: String
+      # The rule priority. A listener can't have multiple rules with the same priority
+      #Priority: Integer
