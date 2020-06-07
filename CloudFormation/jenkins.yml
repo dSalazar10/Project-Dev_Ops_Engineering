@@ -134,8 +134,8 @@ Resources:
           sudo apt-get update
           curl -fsSL https://get.docker.com -o get-docker.sh
           sudo sh get-docker.sh
-          docker pull dsalazar10/udagram:jenkins
-          sudo docker run -p 8080:8080 dsalazar10/udagram:jenkins
+          docker pull jenkins/jenkins:lts
+          sudo docker run -p 8080:8080 jenkins/jenkins:lts
 
 
   JenkinsGroup:

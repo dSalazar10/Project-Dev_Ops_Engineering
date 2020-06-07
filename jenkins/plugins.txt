@@ -1,8 +1,0 @@
-antisamy-markup-formatter
-aqua-microscanner
-blueocean
-bouncycastle-api
-command-launcher
-matrix-auth
-jdk-tool
-pipeline-aws

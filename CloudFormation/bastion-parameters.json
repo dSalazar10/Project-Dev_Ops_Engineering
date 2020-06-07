@@ -1,6 +1,6 @@
 [
     {
 		"ParameterKey": "EnvironmentName",
-		"ParameterValue": "JenkinsEnv"
+		"ParameterValue": "UdagramDEV"
     }
 ]
