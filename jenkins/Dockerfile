@@ -1,4 +1,4 @@
-FROM jenkinsci/blueocean
+FROM jenkins/jenkins:lts
 # Turn off setup wizard
 ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
 # Set env variables for admin account
