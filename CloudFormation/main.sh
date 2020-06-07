@@ -74,6 +74,8 @@ function SetupStack {
     echo "1) Network Stack"
     echo "2) Data Stack"
     echo "3) IAM Stack"
+    echo "4) Bastion Stack"
+    echo "5) Jenkins Stack"
     echo "~:"
     read choice
     case $choice in
@@ -91,6 +93,16 @@ function SetupStack {
             stackname="IAMStack"
             tempfile="iam.yml"
             paramfile="iam-parameters.json"
+            ;;
+        4)
+            stackname="BastionStack"
+            tempfile="bastion.yml"
+            paramfile="bastion-parameters.json"
+            ;;
+        3)
+            stackname="JenkinsStack"
+            tempfile="jenkins.yml"
+            paramfile="jenkins-parameters.json"
             ;;
     esac
 }
