@@ -130,8 +130,12 @@ Resources:
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
+          # Install Docker
+          sudo apt-get update && curl -fsSL https://get.docker.com -o get-docker.sh
+          sudo sh get-docker.sh
+          sudo usermod -aG docker ubuntu
           docker pull dsalazar10/udagram:jenkins
-          docker run -p 8080:8080 dsalazar10/udagram:jenkins
+          sudo docker run -p 8080:8080 dsalazar10/udagram:jenkins
 
 
   JenkinsGroup:
