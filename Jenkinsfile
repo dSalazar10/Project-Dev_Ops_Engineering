@@ -2,7 +2,7 @@ pipeline {
   // specifies where the entire Pipeline, or a specific stage, will execute
   // in the Jenkins environment depending on where the agent section is placed
   // [any, none, label, node, docker, dockerfile, kubernetes]
-  agent none
+  agent any
   stages {
     // Stage 1: Building Docker images
     stage('Build/Launch') {
