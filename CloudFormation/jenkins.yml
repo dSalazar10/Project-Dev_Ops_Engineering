@@ -91,7 +91,7 @@ Resources:
       BlockDeviceMappings:
         - DeviceName: "/dev/sdk"
           Ebs:
-            VolumeSize: '50' #50GB
+            VolumeSize: '10' #10GB
       # The ID of a ClassicLink-enabled VPC to link your EC2-Classic instances to
       #ClassicLinkVPCId: String
       # The IDs of one or more security groups for the VPC that you specified in the ClassicLinkVPCId property
@@ -140,7 +140,6 @@ Resources:
           sudo apt-get update && sudo apt-get install -y jenkins
           sudo usermod -aG docker ubuntu
           sudo chmod 666 /var/run/docker.sock
-          sudo echo "jenkins ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
           sudo systemctl start jenkins
 
 
