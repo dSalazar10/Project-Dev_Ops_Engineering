@@ -10,7 +10,7 @@ pipeline {
         stage('Build Feed') {
           steps {
             dir(path: 'src/restapi-feed/') {
-              sh 'sudo ./build_docker.sh'
+              sh './build_docker.sh'
             }
           }
         }
@@ -18,7 +18,7 @@ pipeline {
         stage('Build User') {
           steps {
             dir(path: 'src/restapi-user/') {
-              sh 'sudo ./build_docker.sh'
+              sh './build_docker.sh'
             }
           }
         }
@@ -26,7 +26,7 @@ pipeline {
         stage('Build Frontend') {
           steps {
             dir(path: 'src/front-end') {
-              sh 'sudo ./build_docker.sh'
+              sh './build_docker.sh'
             }
           }
         }
@@ -34,7 +34,7 @@ pipeline {
         stage('Build Reverse-proxy') {
           steps {
             dir(path: 'src/reverse-proxy') {
-              sh 'sudo ./build_docker.sh'
+              sh './build_docker.sh'
             }
           }
         }
