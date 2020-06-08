@@ -12,7 +12,6 @@ pipeline {
             dir(path: '${env.WORKSPACE}/src/restapi-feed/') {
               sh './build_docker.sh'
             }
-
           }
         }
 
@@ -21,7 +20,6 @@ pipeline {
             dir(path: '${env.WORKSPACE}/src/restapi-user/') {
               sh './build_docker.sh'
             }
-
           }
         }
 
@@ -30,7 +28,6 @@ pipeline {
             dir(path: '${env.WORKSPACE}/src/front-end') {
               sh './build_docker.sh'
             }
-
           }
         }
 
@@ -39,7 +36,6 @@ pipeline {
             dir(path: '${env.WORKSPACE}/src/reverse-proxy') {
               sh './build_docker.sh'
             }
-
           }
         }
       }
@@ -53,7 +49,6 @@ pipeline {
             dir(path: '${env.WORKSPACE}/src/restapi-feed/') {
               sh 'npm run test'
             }
-
           }
         }
 
@@ -63,7 +58,6 @@ pipeline {
             dir(path: '${env.WORKSPACE}/src/restapi-user/') {
               sh 'npm run test'
             }
-
           }
         }
 
@@ -73,10 +67,8 @@ pipeline {
             dir(path: '${env.WORKSPACE}/src/front-end/') {
               sh 'npm run test'
             }
-
           }
         }
-
       }
     }
 
@@ -86,6 +78,5 @@ pipeline {
         s3Upload(bucket: 'jenkinsbucket', file: 'test.txt')
       }
     }
-
   }
 }
