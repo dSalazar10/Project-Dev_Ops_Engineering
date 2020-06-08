@@ -78,7 +78,7 @@ Resources:
 
 
   # Access to the bucket will be with Signed URLs only
-  S3Bucket:
+  FileStore:
       Type: AWS::S3::Bucket
       Properties:
           CorsConfiguration:
@@ -88,9 +88,23 @@ Resources:
                 AllowedOrigins: ['*']
                 MaxAge: '3600'
 
+  # Access to the bucket will be with Signed URLs only
+  JenkinsBucket:
+    Type: AWS::S3::Bucket
+    # Properties:
+    #     CorsConfiguration:
+    #         CorsRules:
+    #         - AllowedHeaders: ['*']
+    #           AllowedMethods: [GET, POST, PUT, DELETE, HEAD]
+    #           AllowedOrigins: ['*']
+    #           MaxAge: '3600'
+
 Outputs:
-  BucketName:
-      Value: !Ref 'S3Bucket'
+  FileStoreBucketName:
+      Value: !Ref 'FileStore'
+      Description: Name of the Amazon S3 bucket used to store image files.
+  JenkinsBucketName:
+      Value: !Ref 'FileStore'
       Description: Name of the Amazon S3 bucket used to store image files.
   DBAddress:
       Value: !GetAtt [PostgresDB, Endpoint.Address]
