@@ -9,7 +9,7 @@ pipeline {
       parallel {
         stage('Build Feed') {
           steps {
-            dir(path: '${env.WORKSPACE}/src/restapi-feed/') {
+            dir(path: 'src/restapi-feed/') {
               sh './build_docker.sh'
             }
           }
@@ -17,7 +17,7 @@ pipeline {
 
         stage('Build User') {
           steps {
-            dir(path: '${env.WORKSPACE}/src/restapi-user/') {
+            dir(path: 'src/restapi-user/') {
               sh './build_docker.sh'
             }
           }
@@ -25,7 +25,7 @@ pipeline {
 
         stage('Build Frontend') {
           steps {
-            dir(path: '${env.WORKSPACE}/src/front-end') {
+            dir(path: 'src/front-end') {
               sh './build_docker.sh'
             }
           }
@@ -33,7 +33,7 @@ pipeline {
 
         stage('Build Reverse-proxy') {
           steps {
-            dir(path: '${env.WORKSPACE}/src/reverse-proxy') {
+            dir(path: 'src/reverse-proxy') {
               sh './build_docker.sh'
             }
           }
@@ -46,7 +46,7 @@ pipeline {
         stage('Test Feed') {
           agent { docker 'node:12' }
           steps {
-            dir(path: '${env.WORKSPACE}/src/restapi-feed/') {
+            dir(path: 'src/restapi-feed/') {
               sh 'npm run test'
             }
           }
@@ -55,7 +55,7 @@ pipeline {
         stage('Test User') {
           agent { docker 'node:12' }
           steps {
-            dir(path: '${env.WORKSPACE}/src/restapi-user/') {
+            dir(path: 'src/restapi-user/') {
               sh 'npm run test'
             }
           }
@@ -64,7 +64,7 @@ pipeline {
         stage('Test Frontend') {
           agent { docker 'beevelop/ionic' }
           steps {
-            dir(path: '${env.WORKSPACE}/src/front-end/') {
+            dir(path: 'src/front-end/') {
               sh 'npm run test'
             }
           }
