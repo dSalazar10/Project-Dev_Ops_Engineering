@@ -6,4 +6,6 @@ RUN apt-get update \
     && curl -fsSL https://get.docker.com -o get-docker.sh
 RUN sh get-docker.sh
 RUN usermod -aG docker jenkins
+RUN docker pull node:12
+RUN docker pull beevelop/ionic
 USER jenkins
