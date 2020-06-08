@@ -6,10 +6,12 @@ pipeline {
   stages {
     // Stage 1: Building Docker images
     stage('Build/Launch') {
-      stage('Build Frontend') {
-        steps {
-          dir(path: 'src/front-end') {
-            sh 'docker build -t dsalazar10/udagram:frontend .'
+      parallel {
+        stage('Build Frontend') {
+          steps {
+            dir(path: 'src/front-end') {
+              sh 'docker build -t dsalazar10/udagram:frontend .'
+            }
           }
         }
         stage('Build Feed') {
