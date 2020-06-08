@@ -72,45 +72,15 @@ pipeline {
     stage('Deploy') {
       steps {
         // Push Docker Images
-        parallel {
-          stage('Deploy Frontend') {
-            steps {
-              dir(path: 'src/front-end') {
-                sh 'docker login'
-                sh 'docker push dsalazar10/udagram:frontend'
-              }
-            }
-          }
-          stage('Build Feed') {
-            steps {
-              dir(path: 'src/restapi-feed/') {
-                sh 'docker login'
-                sh 'docker push dsalazar10/udagram:feed'
-              }
-            }
-          }
-          stage('Build User') {
-            steps {
-              dir(path: 'src/restapi-user/') {
-                sh 'docker login'
-                sh 'docker push dsalazar10/udagram:user'
-              }
-            }
-          }
-          stage('Build Reverse-proxy') {
-            steps {
-              dir(path: 'src/reverse-proxy') {
-                sh 'docker login'
-                sh 'docker push dsalazar10/udagram:reverse-proxy'
-              }
-            }
-          }
-        }
-      }
-      // Push Helm Charts to S3 Bucket
-      withAWS(region:'us-west-2',credentials:'aws-static') {
-        s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, bucket: 'jenkinsbucket', file: 'test.txt')
-      }
+        sh 'docker login'
+        sh 'docker push dsalazar10/udagram:frontend'
+        sh 'docker push dsalazar10/udagram:feed'
+        sh 'docker push dsalazar10/udagram:user'
+        sh 'docker push dsalazar10/udagram:reverse-proxy'
+        // Push Helm Charts to S3 Bucket
+        withAWS(region:'us-west-2',credentials:'aws-static') {
+          s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, bucket: 'datastack-jenkinsbucket-1auzhe5nk834v', file: 'Jenkinsfile.groovy')
+        } 
       }
     }
   }

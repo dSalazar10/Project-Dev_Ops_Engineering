@@ -104,7 +104,7 @@ Outputs:
       Value: !Ref 'FileStore'
       Description: Name of the Amazon S3 bucket used to store image files.
   JenkinsBucketName:
-      Value: !Ref 'FileStore'
+      Value: !Ref 'JenkinsBucket'
       Description: Name of the Amazon S3 bucket used to store image files.
   DBAddress:
       Value: !GetAtt [PostgresDB, Endpoint.Address]
