@@ -7,34 +7,31 @@ pipeline {
     // Stage 1: Building Docker images
     stage('Build/Launch') {
       parallel {
-        stage('Build Feed') {
-          steps {
-            dir(path: 'src/restapi-feed/') {
-              sh './build_docker.sh'
-            }
-          }
-        }
-
-        stage('Build User') {
-          steps {
-            dir(path: 'src/restapi-user/') {
-              sh './build_docker.sh'
-            }
-          }
-        }
-
         stage('Build Frontend') {
           steps {
             dir(path: 'src/front-end') {
-              sh './build_docker.sh'
+              sh 'docker build -t dsalazar10/udagram:frontend .'
             }
           }
         }
-
+        stage('Build Feed') {
+          steps {
+            dir(path: 'src/restapi-feed/') {
+              sh 'docker build -t dsalazar10/udagram:feed .'
+            }
+          }
+        }
+        stage('Build User') {
+          steps {
+            dir(path: 'src/restapi-user/') {
+              sh 'docker build -t dsalazar10/udagram:user .'
+            }
+          }
+        }
         stage('Build Reverse-proxy') {
           steps {
             dir(path: 'src/reverse-proxy') {
-              sh './build_docker.sh'
+              sh 'docker build -t dsalazar10/udagram:reverse-proxy .'
             }
           }
         }
