@@ -1,12 +1,12 @@
 pipeline {
-  agent none
+  agent { docker 'node:12' }
   stages {
     stage('Build/Launch') {
       parallel {
         stage('Build Feed') {
           steps {
             dir(path: '/src/restapi-feed/') {
-              sh 'npm run build'
+              sh 'npm runÂ build'
             }
 
           }
