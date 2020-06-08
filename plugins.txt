@@ -1,1 +1,4 @@
+This will create a plugin file and fill it with some useful plugins
 sudo touch /usr/share/jenkins/plugins.txt && sudo /bin/su -c "echo $'aqua-microscanner\nblueocean\npipeline-aws\nsaferestart' >> /usr/share/jenkins/plugins.txt" && /usr/local/bin/install-plugins.sh < /usr/share/jenkins/plugins.txt;
+This will move the docker data directory to user directory
+sudo touch /etc/docker/daemon.json && sudo /bin/su -c "echo $'{\n\t"data-root": "/home/ubuntu/docker_data"\n}' >> /etc/docker/daemon.json"
