@@ -1,0 +1,1 @@
+sudo touch /usr/share/jenkins/plugins.txt && sudo /bin/su -c "echo $'aqua-microscanner\nblueocean\npipeline-aws\nsaferestart' >> /usr/share/jenkins/plugins.txt" && /usr/local/bin/install-plugins.sh < /usr/share/jenkins/plugins.txt;
