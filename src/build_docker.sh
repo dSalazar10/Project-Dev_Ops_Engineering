@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Be sure to execute this command with the following:
-# . ./upload_docker.sh
+# . ./build_docker.sh
 
 FOLDERS=("front-end" "restapi-feed" "restapi-user" "reverse-proxy")
 WDIR=$PWD
@@ -11,6 +11,6 @@ do
     #echo "Changing to ${FOLDER} dir:"
     cd $FOLDER
     #echo "Uploading..."
-    ./upload_docker.sh
+    ./build_docker.sh
     cd $WDIR
 done

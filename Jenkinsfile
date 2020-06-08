@@ -4,39 +4,44 @@ pipeline {
   // [any, none, label, node, docker, dockerfile, kubernetes]
   agent none
   stages {
-    // Stage 1: Build/Launch (Docker)
+    // Stage 1: Building Docker images
     stage('Build/Launch') {
       parallel {
         stage('Build Feed') {
-          agent { docker 'node:12' }
           steps {
             dir(path: '${env.WORKSPACE}/src/restapi-feed/') {
-              sh 'npm run build'
+              sh './build_docker.sh'
             }
 
           }
         }
 
         stage('Build User') {
-          agent { docker 'node:12' }
           steps {
             dir(path: '${env.WORKSPACE}/src/restapi-user/') {
-              sh 'npm run build'
+              sh './build_docker.sh'
             }
 
           }
         }
 
         stage('Build Frontend') {
-          agent { docker 'beevelop/ionic' }
           steps {
             dir(path: '${env.WORKSPACE}/src/front-end') {
-              sh 'npm run build'
+              sh './build_docker.sh'
             }
 
           }
         }
 
+        stage('Build Reverse-proxy') {
+          steps {
+            dir(path: '${env.WORKSPACE}/src/reverse-proxy') {
+              sh './build_docker.sh'
+            }
+
+          }
+        }
       }
     }
 
