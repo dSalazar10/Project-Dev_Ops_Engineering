@@ -1,11 +1,16 @@
 pipeline {
-  agent { docker 'node:12' }
+  // specifies where the entire Pipeline, or a specific stage, will execute
+  // in the Jenkins environment depending on where the agent section is placed
+  // [any, none, label, node, docker, dockerfile, kubernetes]
+  agent none
   stages {
+    // Stage 1: Build/Launch (Docker)
     stage('Build/Launch') {
       parallel {
         stage('Build Feed') {
+          agent { docker 'node:12' }
           steps {
-            dir(path: '/src/restapi-feed/') {
+            dir(path: '${env.WORKSPACE}/src/restapi-feed/') {
               sh 'npm run build'
             }
 
@@ -13,8 +18,9 @@ pipeline {
         }
 
         stage('Build User') {
+          agent { docker 'node:12' }
           steps {
-            dir(path: '/src/restapi-user/') {
+            dir(path: '${env.WORKSPACE}/src/restapi-user/') {
               sh 'npm run build'
             }
 
@@ -22,8 +28,9 @@ pipeline {
         }
 
         stage('Build Frontend') {
+          agent { docker 'beevelop/ionic' }
           steps {
-            dir(path: '/src/front-end') {
+            dir(path: '${env.WORKSPACE}/src/front-end') {
               sh 'npm run build'
             }
 
@@ -36,8 +43,9 @@ pipeline {
     stage('Test') {
       parallel {
         stage('Test Feed') {
+          agent { docker 'node:12' }
           steps {
-            dir(path: '/src/restapi-feed/') {
+            dir(path: '${env.WORKSPACE}/src/restapi-feed/') {
               sh 'npm run test'
             }
 
@@ -45,8 +53,9 @@ pipeline {
         }
 
         stage('Test User') {
+          agent { docker 'node:12' }
           steps {
-            dir(path: '/src/restapi-user/') {
+            dir(path: '${env.WORKSPACE}/src/restapi-user/') {
               sh 'npm run test'
             }
 
@@ -54,8 +63,9 @@ pipeline {
         }
 
         stage('Test Frontend') {
+          agent { docker 'beevelop/ionic' }
           steps {
-            dir(path: '/src/front-end/') {
+            dir(path: '${env.WORKSPACE}/src/front-end/') {
               sh 'npm run test'
             }
 
