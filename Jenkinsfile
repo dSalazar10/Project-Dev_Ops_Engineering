@@ -19,7 +19,7 @@ pipeline {
       // }
       steps {
         dir(path: 'src') {
-          sh 'docker-compose up'
+          sh 'echo "docker-compose up"'
         }
 
       }
@@ -32,6 +32,10 @@ pipeline {
       steps {
         sh 'docker login'
         sh 'docker-compose push'
+        // Push Helm Charts to S3 Bucket
+        withAWS(region:'us-west-2',credentials:'aws-static') {
+          s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, bucket: 'datastack-jenkinsbucket-1auzhe5nk834v', file: 'Jenkinsfile.groovy')
+        }
       }
     }
   }
