@@ -1,14 +1,11 @@
 This will create a plugin file and fill it with some useful plugins
 sudo touch /usr/share/jenkins/plugins.txt && sudo /bin/su -c "echo $'aqua-microscanner\nblueocean\npipeline-aws\nsaferestart' >> /usr/share/jenkins/plugins.txt" && /usr/local/bin/install-plugins.sh < /usr/share/jenkins/plugins.txt;
 
-
-
-
 Memory Issues With Docker in EC2:
 1) (Optional) This will move the docker data directory to user directory
 - sudo touch /etc/docker/daemon.json && sudo /bin/su -c "echo $'{\n\t"data-root": "/home/ubuntu/docker_data"\n}' >> /etc/docker/daemon.json"
 2) This will expand the storage to 20GiB for all docker images
-- sudo /bin/su -c "echo $'{\n\t"experimental" : true,\n\t"storage-driver" : "devicemapper",\n\t"storage-opts" : ["dm.basesize=20G"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker" 
+- sudo /bin/su -c "echo $'{\n\t"experimental" : true,\n\t"storage-driver" : "devicemapper",\n\t"storage-opts" : ["dm.basesize=50G"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker" 
 3) This is how you expand the EBS Volume in AWS:
 - Navigate to ec2
 - Look at the details of your instance and locate root device and block device
@@ -18,5 +15,10 @@ Memory Issues With Docker in EC2:
 - enter the desired volume size
 - ssh into instance
 - run lsblk to see available volumes and note the size
-- run sudo growpart /dev/volumename 1 on the volume you want to resize
-- run sudo xfs_growfs /dev/volumename (the one with / in mountpoint column of lsblk)
+- run sudo growpart /dev/<volumename> 1 on the volume you want to resize
+- run sudo xfs_growfs /dev/<volumename> (the one with / in mountpoint column of lsblk)
+
+To remove all the containers and images:
+- service docker stop
+- rm -rf /var/lib/docker ( the default graphdriver which you have set)
+- service docker start
