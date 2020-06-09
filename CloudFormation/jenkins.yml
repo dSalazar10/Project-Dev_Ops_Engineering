@@ -205,7 +205,6 @@ Resources:
           sudo apt-get update && sudo apt-get install -y jenkins
           curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
           sudo apt-get install -y nodejs
-          sudo /bin/su -c "echo $'{\n\t\"storage-driver\" : \"aufs\",\n\t\"storage-opts\" : [\"dm.basesize=500G\"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker && chmod 666 /var/run/docker.sock && growpart /dev/xvda1 1 && sresize2fs /dev/xvda1" 
           sudo systemctl start jenkins
 
 

@@ -11,28 +11,28 @@ services:
   backend-user:
     image: dsalazar10/udagram:user
     environment:
-      POSTGRESS_USERNAME: $POSTGRESS_USERNAME
-      POSTGRESS_PASSWORD: $POSTGRESS_PASSWORD 
-      POSTGRESS_DB: $POSTGRESS_DB 
-      POSTGRESS_HOST: $POSTGRESS_HOST 
-      AWS_REGION: $AWS_REGION 
-      AWS_PROFILE: $AWS_PROFILE 
-      AWS_BUCKET: $AWS_BUCKET
-      JWT_SECRET: $JWT_SECRET
+      POSTGRESS_USERNAME: MyAdminUser
+      POSTGRESS_PASSWORD: PassWord123
+      POSTGRESS_DB: udagramdb 
+      POSTGRESS_HOST: dp19kx9kdoak5qw.cnnioxjuyodo.us-west-2.rds.amazonaws.com
+      AWS_REGION: us-west-2 
+      AWS_PROFILE: IAMStack-IAMUser-1KKXDCVNTLO46 
+      AWS_BUCKET: datastack-filestore-b3wxhxb20mz0
+      JWT_SECRET: xRmC1N8mjHHpkvUmnBFeURnAsmHer50LR6yPsPyy
       URL: "http://localhost:8080"
   backend-feed:
     image: dsalazar10/udagram:feed
     volumes:
       - $HOME/.aws:/root/.aws
     environment:
-      POSTGRESS_USERNAME: $POSTGRESS_USERNAME
-      POSTGRESS_PASSWORD: $POSTGRESS_PASSWORD 
-      POSTGRESS_DB: $POSTGRESS_DB 
-      POSTGRESS_HOST: $POSTGRESS_HOST 
-      AWS_REGION: $AWS_REGION 
-      AWS_PROFILE: $AWS_PROFILE 
-      AWS_BUCKET: $AWS_BUCKET
-      JWT_SECRET: $JWT_SECRET
+      POSTGRESS_USERNAME: MyAdminUser
+      POSTGRESS_PASSWORD: PassWord123
+      POSTGRESS_DB: udagramdb
+      POSTGRESS_HOST: dp19kx9kdoak5qw.cnnioxjuyodo.us-west-2.rds.amazonaws.com
+      AWS_REGION: us-west-2 
+      AWS_PROFILE: IAMStack-IAMUser-1KKXDCVNTLO46 
+      AWS_BUCKET: datastack-filestore-b3wxhxb20mz0
+      JWT_SECRET: xRmC1N8mjHHpkvUmnBFeURnAsmHer50LR6yPsPyy
       URL: "http://localhost:8080"
   frontend:
     image: dsalazar10/udagram:frontend

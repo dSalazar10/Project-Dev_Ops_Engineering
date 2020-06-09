@@ -13,8 +13,8 @@ sudo /bin/su -c "echo $'{\n\t\"storage-driver\" : \"aufs\",\n\t\"storage-opts\" 
 - enter the desired volume size
 - ssh into instance
 - run lsblk to see available volumes and note the size
-- run sudo growpart /dev/xvda1 1 on the volume you want to resize
-- run sresize2fs /dev/xvda1
+- run sudo growpart /dev/xvda 1 on the volume you want to resize
+- run sudo resize2fs /dev/xvda1
 
 
 Docker images used in pipeline:

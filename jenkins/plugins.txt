@@ -6,3 +6,4 @@ command-launcher
 matrix-auth
 jdk-tool
 pipeline-aws
+dockerhub-notification
