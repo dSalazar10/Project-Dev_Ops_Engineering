@@ -3,9 +3,9 @@ pipeline {
   stages {
 
     stage('Build Stage') {
-      when { 
-        branch 'dev' 
-      }
+      // when { 
+      //   branch 'dev' 
+      // }
       steps {
         dir(path: 'src') {
           sh 'docker-compose build'
@@ -14,9 +14,9 @@ pipeline {
     }
 
     stage('Test Stage') {
-      when { 
-        branch 'stage' 
-      }
+      // when { 
+      //   branch 'stage' 
+      // }
       steps {
         dir(path: 'src') {
           sh 'docker-compose up'
@@ -26,9 +26,9 @@ pipeline {
     }
 
     stage('Deploy Stage') {
-      when { 
-        branch 'master'
-      }
+      // when { 
+      //   branch 'master'
+      // }
       steps {
         sh 'docker login'
         sh 'docker-compose push'
