@@ -1,0 +1,6 @@
+#!/bin/bash
+echo "Enter the Jenkins Host's Private IP Address:"
+read BIP
+chmod 400 jenkins-key.pem
+scp -i jenkins-key.pem setup.sh ubuntu@$BIP:/home/ubuntu/setup.sh
+ssh -i jenkins-key.pem ubuntu@$BIP

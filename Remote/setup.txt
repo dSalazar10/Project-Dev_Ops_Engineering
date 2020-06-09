@@ -1,0 +1,28 @@
+echo "Jenkins Initial Admin Password:"
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+echo "Press [return] to continue"
+read wait_flag
+
+echo "Setting Docker Daemon's storage-driver to aufs and basesize to 500GiB"
+sudo /bin/su -c "echo $'{\n\t\"storage-driver\" : \"aufs\",\n\t\"storage-opts\" : [\"dm.basesize=500G\"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker && chmod 666 /var/run/docker.sock" 
+
+echo "Expand the EC2's Volume to 500GiB"
+echo "https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#Instances:sort=instanceId"
+echo "Press [return] to continue"
+read wait_flag
+
+echo "Expanding dev partition to 500GiB"
+lsblk
+sudo growpart /dev/xvda 1
+sudo resize2fs /dev/xvda1
+lsblk
+
+echo "Pulling Repo:"
+git clone https://github.com/dSalazar10/Project-Dev_Ops_Engineering.git
+
+echo "Pulling Docker images for repo"
+cd Project-Dev_Ops_Engineering/src
+docker-compose pull reverseproxy
+docker-compose pull backend-user
+docker-compose pull backend-feed
+docker-compose pull frontend

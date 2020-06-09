@@ -30,3 +30,4 @@ systemctl daemon-reload && systemctl restart docker && chmod 666 /var/run/docker
 Visualize docker memory usage
 docker system df
 cd /var/lib/docker && du -shc *
+
