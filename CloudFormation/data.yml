@@ -91,13 +91,26 @@ Resources:
   # Access to the bucket will be with Signed URLs only
   JenkinsBucket:
     Type: AWS::S3::Bucket
-    # Properties:
-    #     CorsConfiguration:
-    #         CorsRules:
-    #         - AllowedHeaders: ['*']
-    #           AllowedMethods: [GET, POST, PUT, DELETE, HEAD]
-    #           AllowedOrigins: ['*']
-    #           MaxAge: '3600'
+
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Id: MyPolicy
+        Version: 2012-10-17
+        Statement:
+          - Sid: PublicReadGetObject
+            Effect: Allow
+            Principal: '*'
+            Action: 's3:GetObject'
+            Resource: !Join 
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref JenkinsBucket
+                - /*
+      Bucket: !Ref JenkinsBucket
+
+    
 
 Outputs:
   FileStoreBucketName:

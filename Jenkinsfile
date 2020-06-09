@@ -9,8 +9,8 @@ pipeline {
 
     stage('Build Stage') {
       steps {
-        dir(path: 'src/front-end') {
-          sh 'docker build -t dsalazar10/udagram:frontend .'
+        dir(path: 'src') {
+          sh 'docker-compose build'
         }
 
       }
@@ -24,8 +24,8 @@ pipeline {
 
     stage('Test Stage') {
       steps {
-        dir(path: 'src/front-end/') {
-          sh 'docker exec -it dsalazar10/udagram:frontend -c "npm run test"'
+        dir(path: 'src/restapi-feed/') {
+          sh 'docker exec -it dsalazar10/udagram:feed -c "npm run test"'
         }
 
       }
@@ -39,10 +39,8 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        sh '''// Push Docker Images
-sh \'docker login\'
-sh \'docker push dsalazar10/udagram:frontend\'
-'''
+        sh 'docker login'
+        sh 'docker push dsalazar10/udagram:feed'
       }
     }
 

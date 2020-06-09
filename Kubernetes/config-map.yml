@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+data:
+  AWS_BUCKET: datastack-filestore-b3wxhxb20mz0
+  AWS_PROFILE: IAMStack-IAMUser-1KKXDCVNTLO46
+  AWS_REGION: us-west-2
+  JWT_SECRET: xRmC1N8mjHHpkvUmnBFeURnAsmHer50LR6yPsPyy
+  POSTGRESS_DB: udagramdb
+  POSTGRESS_HOST: dp19kx9kdoak5qw.cnnioxjuyodo.us-west-2.rds.amazonaws.com
+  URL: http://localhost:8100  
+metadata:
+  name: env-config
+  
