@@ -16,16 +16,14 @@ lsblk
 sudo growpart /dev/xvda 1
 sudo resize2fs /dev/xvda1
 lsblk
+sudo /bin/su -c "echo $'{\n\t\"storage-driver\" : \"aufs\",\n\t\"storage-opts\" : [\"dm.basesize=500G\"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker && chmod 666 /var/run/docker.sock" 
 
 echo "Pulling Repo:"
 git clone https://github.com/dSalazar10/Project-Dev_Ops_Engineering.git
 
-echo "Pulling Docker images for repo"
+echo "Building Docker images"
 cd Project-Dev_Ops_Engineering/src
-docker-compose pull reverseproxy
-docker-compose pull backend-user
-docker-compose pull backend-feed
-docker-compose pull frontend
+./build_docker.sh
 
 echo "Finally, log into docker hub:"
 docker login
