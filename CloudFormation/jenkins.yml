@@ -10,6 +10,69 @@ Parameters:
 
 
 Resources:
+  # JenkinsMaster:
+  #   Type: AWS::EC2::Instance
+  #   Properties:
+  #     InstanceType: t2.micro
+  #     ImageId: ami-003634241a8fcdec0 # Ubuntu
+  #     # Ideally you want to only put the key during the time that you execute
+  #     # this script. Remove it immediately after
+  #     # Remember: If you push this, the key name will be public
+  #     KeyName: jenkins-key
+  #     SubnetId: 
+  #       Fn::ImportValue:
+  #         !Sub "${EnvironmentName}-PRI1-SN"
+  #     SecurityGroupIds:
+  #       - !Ref JenkinsMasterSecurityGroup
+  #     UserData:
+  #       Fn::Base64: !Sub |
+  #         #!/bin/bash
+  #           # Install Docker
+  #           sudo apt-get update && curl -fsSL https://get.docker.com -o get-docker.sh
+  #           sudo sh get-docker.sh
+  #           wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
+  #           sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+  #           sudo apt-get update && sudo apt-get install -y default-jre 
+  #           sudo apt-get update && sudo apt-get install -y nginx
+  #           sudo apt-get update && sudo apt-get install -y jenkins
+  #           curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
+  #           sudo apt-get install -y nodejs
+  #           sudo usermod -aG docker ubuntu
+  #           sudo chmod 666 /var/run/docker.sock
+  #           sudo systemctl start jenkins
+
+  # JenkinsMasterSecurityGroup:
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties: 
+  #     # A description for the security group
+  #     # String
+  #     GroupDescription: Allow ssh to/from our Jenkins host
+  #     SecurityGroupEgress: 
+  #     - IpProtocol: tcp
+  #       FromPort: 0
+  #       ToPort: 65535
+  #       CidrIp: 0.0.0.0/0
+  #     # The name of the security group
+  #     # GroupName: String
+  #     # The inbound rules associated with the security group
+  #     SecurityGroupIngress: 
+  #     - IpProtocol: tcp
+  #       FromPort: 8080
+  #       ToPort: 8080
+  #       CidrIp: 0.0.0.0/0
+  #     - IpProtocol: tcp
+  #       FromPort: 22
+  #       ToPort: 22
+  #       CidrIp: 0.0.0.0/0 # Change this to my IP Address
+  #     # Any tags assigned to the security group
+  #     #Tags: 
+  #     #  - Tag
+  #     # The ID of the VPC for the security group
+  #     # String
+  #     VpcId: 
+  #       Fn::ImportValue:
+  #         !Sub "${EnvironmentName}-VPCID"
+
   ELBSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties: 
@@ -135,13 +198,15 @@ Resources:
           sudo sh get-docker.sh
           wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
           sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
+          sudo usermod -aG docker ubuntu
+          sudo /bin/su -c "chmod 666 /var/run/docker.sock && echo $'{\n\t"experimental" : true,\n\t"storage-driver" : "devicemapper",\n\t"storage-opts" : ["dm.basesize=50G"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker" 
+          docker pull beevelop/ionic
+          docker pull node:12
           sudo apt-get update && sudo apt-get install -y default-jre 
           sudo apt-get update && sudo apt-get install -y nginx
           sudo apt-get update && sudo apt-get install -y jenkins
           curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
           sudo apt-get install -y nodejs
-          sudo usermod -aG docker ubuntu
-          sudo chmod 666 /var/run/docker.sock
           sudo systemctl start jenkins
 
 
@@ -336,3 +401,8 @@ Outputs:
     Value: !GetAtt [JenkinsLB, DNSName]
     Export:
       Name: !Sub ${EnvironmentName}-LB-DNS
+  # BastionMasterIP:
+  #   Description: The Private IP Address of the Jenkins Master Node
+  #   Value:  !GetAtt [JenkinsMaster, PrivateIp]
+  #   Export:
+  #     Name: !Sub ${EnvironmentName}-JM-IP
