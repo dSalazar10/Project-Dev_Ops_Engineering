@@ -26,3 +26,6 @@ docker-compose pull reverseproxy
 docker-compose pull backend-user
 docker-compose pull backend-feed
 docker-compose pull frontend
+
+echo "Finally, log into docker hub:"
+docker login
