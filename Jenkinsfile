@@ -30,11 +30,10 @@ pipeline {
       //   branch 'master'
       // }
       steps {
-        sh 'docker login'
         sh 'docker-compose push'
         // Push Helm Charts to S3 Bucket
         withAWS(region:'us-west-2',credentials:'aws-static') {
-          s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, bucket: 'datastack-jenkinsbucket-1auzhe5nk834v', file: 'Jenkinsfile.groovy')
+          s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, bucket: 'datastack-jenkinsbucket-wcz9aopz9j1u', file: 'Jenkinsfile.groovy')
         }
       }
     }
