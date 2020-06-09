@@ -1,12 +1,10 @@
-This will create a plugin file and fill it with some useful plugins
+This will create a plugin file and fill it with some useful plugins and then automatically install it
 sudo touch /usr/share/jenkins/plugins.txt && sudo /bin/su -c "echo $'aqua-microscanner\nblueocean\npipeline-aws\nsaferestart' >> /usr/share/jenkins/plugins.txt" && /usr/local/bin/install-plugins.sh < /usr/share/jenkins/plugins.txt;
 
 Memory Issues With Docker in EC2:
-1) (Optional) This will move the docker data directory to user directory
-- sudo touch /etc/docker/daemon.json && sudo /bin/su -c "echo $'{\n\t"data-root": "/home/ubuntu/docker_data"\n}' >> /etc/docker/daemon.json"
-2) This will expand the storage to 20GiB for all docker images
-- sudo /bin/su -c "echo $'{\n\t"experimental" : true,\n\t"storage-driver" : "devicemapper",\n\t"storage-opts" : ["dm.basesize=50G"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker" 
-3) This is how you expand the EBS Volume in AWS:
+1) This will expand the storage to 20GiB for all docker images
+- sudo /bin/su -c "chmod 666 /var/run/docker.sock && echo $'{\n\t\"experimental\" : true,\n\t\"storage-driver\" : \"devicemapper\",\n\t\"storage-opts\" : [\"dm.basesize=50G\"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker" 
+2) This is how you expand the EBS Volume in AWS:
 - Navigate to ec2
 - Look at the details of your instance and locate root device and block device
 - click on the path and select EBS ID
@@ -22,3 +20,7 @@ To remove all the containers and images:
 - service docker stop
 - rm -rf /var/lib/docker ( the default graphdriver which you have set)
 - service docker start
+
+Docker images used in pipeline:
+- beevelop/ionic
+- node:12
