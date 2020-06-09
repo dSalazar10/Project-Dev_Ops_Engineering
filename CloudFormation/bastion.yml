@@ -28,6 +28,17 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
           sudo apt-get update
+          #! /bin/bash
+          sudo /bin/su -c "echo $' \
+          figlet -f small $( fortune ) \n\
+          echo "\nEnter the Jenkins Host's Private IP Address:" \n\
+          read BIP \n\
+          PROJ=$PWD \n\
+          chmod 400 jenkins-key.pem \n\
+          sudo /bin/su -c "cp jbanner.txt /etc/update-motd.d/00-header" \n\
+          sudo /bin/su -c "scp -i jbanner.txt jenkins-key.pem ubuntu@$BIP:/etc/motd \n\
+          sudo /bin/su -c "ssh -i jenkins-key.pem ubuntu@$BIP" \n\
+          ' << /etc/update-motd.d/00-header"
 
   BastionHostSecurityGroup:
     Type: AWS::EC2::SecurityGroup

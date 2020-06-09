@@ -1,0 +1,11 @@
+#! /bin/bash
+
+figlet -f small $( fortune )
+
+echo "\nEnter the Jenkins Host's Private IP Address:"
+read BIP
+PROJ=$PWD
+chmod 400 jenkins-key.pem
+sudo /bin/su -c "echo $'Welcome!\n' << jbanner.txt"
+sudo /bin/su -c "scp -i jbanner.txt jenkins-key.pem ubuntu@$BIP:/etc/motd
+sudo /bin/su -c "ssh -i jenkins-key.pem ubuntu@$BIP"
