@@ -151,13 +151,14 @@ sudo docker-compose down'''
         stage('Deploy Docker') {
           steps {
             dir(path: 'src') {
-              sh '''docker login
+              withDockerRegistry([ credentialsId: "docker-hub-credentials", url: "https://hub.docker.com" ]) {
+                sh '''docker login
 sudo docker push dsalazar10/udagram:reverse-proxy
 sudo docker push dsalazar10/udagram:front-end
 sudo docker push dsalazar10/udagram:restapi-feed
 sudo docker push dsalazar10/udagram:restapi-user'''
+              }
             }
-
           }
         }
 
