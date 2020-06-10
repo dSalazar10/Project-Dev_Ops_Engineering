@@ -24,7 +24,10 @@ Resources:
                   Resource: '*'
                 - Effect: Allow
                   Action: rds:*
-                  Resource: '*'           
+                  Resource: '*'
+                - Effect: Allow
+                  Action: lambda:*
+                  Resource: '*'
 
     IAMUser:
         Type: AWS::IAM::User
