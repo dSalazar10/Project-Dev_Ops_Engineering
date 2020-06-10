@@ -3,7 +3,7 @@ services:
   reverseproxy:
       image: dsalazar10/udagram:reverse-proxy
       ports:
-          - 8080:8080
+          - 8181:8181
       restart: always
       depends_on:
         - backend-user

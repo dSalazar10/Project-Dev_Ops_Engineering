@@ -1,0 +1,27 @@
+Resources:
+    lambdas3:
+      Type: 'AWS::Serverless::Function'
+      Properties:
+        Handler: lambda_function.lambda_handler
+        Runtime: python3.8
+        CodeUri: .
+        Description: ''
+        MemorySize: 128
+        Timeout: 3
+        Role: 'arn:aws:iam::966289448295:role/service-role/Image_Filter-role-6jm4fdg4'
+        Events:
+          BucketEvent1:
+            Type: S3
+            Properties:
+              Bucket:
+                Ref: Bucket1
+              Events:
+                - 's3:ObjectCreated:*'
+              Filter:
+                S3Key:
+                  Rules:
+                    - Name: suffix
+                      Value: .yml
+    Bucket1:
+      Type: 'AWS::S3::Bucket'
+  
