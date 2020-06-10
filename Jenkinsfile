@@ -1,3 +1,4 @@
+// Credentials: aws, docker-hub, and aqua-microscanner
 pipeline {
   agent any
   stages {
@@ -164,7 +165,9 @@ sudo docker-compose down'''
 
         stage('Deploy Charts') {
           steps {
-            echo 'Deploy Charts'
+            withAWS(region:'us-west-2',credentials:'aws-static') {
+              s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, bucket: 'datastack-jenkinsbucket-1auzhe5nk834v', file: 'Kubernetes')
+            }
           }
         }
 
