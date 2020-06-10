@@ -3,33 +3,40 @@ pipeline {
   stages {
     stage('Lint') {
       parallel {
-        stage('Lint 1') {
+        stage('Lint Front End') {
           steps {
-            echo 'Lint User'
+            dir(path: 'src/front-end') {
+              sh '''npm run app-lint
+echo "run docker-lint"'''
+            }
+
           }
         }
 
-        stage('Lint 2') {
+        stage('Lint Reverse Proxy') {
           steps {
-            echo 'Lint Front End'
+            dir(path: 'src/reverse-proxy') {
+              sh 'npm run nginx-lint'
+            }
+
           }
         }
 
-        stage('Lint 3') {
+        stage('Lint RestAPI Feed') {
           steps {
-            echo 'Lint Reverse Proxy'
+            dir(path: 'src/restapi-feed') {
+              sh 'npm run app-lint'
+            }
+
           }
         }
 
-        stage('Lint 4') {
+        stage('Lint RestAPI User') {
           steps {
-            echo 'Lint Docker'
-          }
-        }
+            dir(path: 'src/restapi-user') {
+              sh 'npm run app-lint'
+            }
 
-        stage('Lint 5') {
-          steps {
-            echo 'Lint Feed'
           }
         }
 
@@ -196,7 +203,7 @@ pipeline {
       }
     }
 
-    stage('') {
+    stage('error') {
       steps {
         timestamps() {
           sh 'date'
