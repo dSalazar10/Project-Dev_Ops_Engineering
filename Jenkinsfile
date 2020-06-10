@@ -147,39 +147,18 @@ npm run docker-lint'''
 
     stage('Deploy') {
       parallel {
-        stage('Deploy Front End') {
+        stage('Deploy Docker') {
           steps {
-            dir(path: 'src/front-end') {
-              sh 'sudo ./upload_docker'
+            dir(path: 'src') {
+              sh 'sudo ./upload_docker.sh�'
             }
 
           }
         }
 
-        stage('Deploy Reverse Proxy') {
+        stage('Deploy Charts') {
           steps {
-            dir(path: 'src/reverse-proxy') {
-              sh 'sudo ./upload_docker'
-            }
-
-          }
-        }
-
-        stage('Deploy RestAPI Feed') {
-          steps {
-            dir(path: 'src/restapi-feed') {
-              sh 'sudo ./upload_docker'
-            }
-
-          }
-        }
-
-        stage('Deploy RestAPI User') {
-          steps {
-            dir(path: 'src/restapi-user') {
-              sh 'sudo ./upload_docker'
-            }
-
+            echo 'Deploy Charts'
           }
         }
 
