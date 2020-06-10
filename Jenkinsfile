@@ -94,8 +94,8 @@ npm run docker-lint'''
     stage('Launch') {
       steps {
         dir(path: 'src') {
-          sh '''docker-compose up -d
-docker-compose down'''
+          sh '''sudo docker-compose up -d
+sudo docker-compose down'''
         }
 
       }
