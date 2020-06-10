@@ -152,7 +152,7 @@ sudo docker-compose down'''
           steps {
             dir(path: 'src') {
               docker.withRegistry('https://hub.docker.com', 'docker-hub-credentials') {
-                sh '''docker login
+                sh '''
 sudo docker push dsalazar10/udagram:reverse-proxy
 sudo docker push dsalazar10/udagram:front-end
 sudo docker push dsalazar10/udagram:restapi-feed
