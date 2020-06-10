@@ -5,7 +5,8 @@
   "main": "nginx.conf",
   "scripts": {
     "nginx-lint": "nginx-linter",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docker-lint": "hadolint Dockerfile"
   },
   "keywords": [],
   "repository": {
