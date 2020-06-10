@@ -92,34 +92,15 @@ Resources:
   KubeBucket:
     Type: AWS::S3::Bucket
     Properties:
-      VersioningConfiguration: Enabled
+      VersioningConfiguration:
+        Status: Enabled
       BucketEncryption:
         ServerSideEncryptionConfiguration: 
-          - KMSMasterKeyID: 
-              Fn::ImportValue: 
-                !Sub "${EnvironmentName}-KMS"
-            SSEAlgorithm: AES256
-          
-
-  BucketPolicy:
-    Type: AWS::S3::BucketPolicy
-    Properties:
-      PolicyDocument:
-        Id: MyPolicy
-        Version: 2012-10-17
-        Statement:
-          - Sid: PublicReadGetObject
-            Effect: Allow
-            Principal: '*'
-            Action: 's3:GetObject'
-            Resource: !Join 
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref KubeBucket
-                - /*
-      Bucket: !Ref KubeBucket
-
-    
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID: 
+                Fn::ImportValue: 
+                 !Sub "${EnvironmentName}-KMS"
+              SSEAlgorithm: aws:kms    
 
 Outputs:
   FileStoreBucketName:
