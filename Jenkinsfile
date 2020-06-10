@@ -150,10 +150,16 @@ sudo docker-compose down'''
       parallel {
         stage('Deploy Docker') {
           steps {
-            dir(path: 'src') {
-              sh 'ls'
+            withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'HUB_USER', passwordVariable: 'HUB_TOKEN')]) {                      
+              sh '''
+                  docker login -u $HUB_USER -p $HUB_TOKEN 
+                  sudo docker push dsalazar10/udagram:reverse-proxy
+                  sudo docker push dsalazar10/udagram:front-end
+                  sudo docker push dsalazar10/udagram:restapi-feed
+                  sudo docker push dsalazar10/udagram:restapi-user
+              '''
             }
-          }
+            }
         }
 
         stage('Deploy Charts') {
