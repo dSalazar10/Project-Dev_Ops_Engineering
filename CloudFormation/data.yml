@@ -89,8 +89,10 @@ Resources:
                 MaxAge: '3600'
 
   # Access to the bucket will be with Signed URLs only
-  JenkinsBucket:
+  KubeBucket:
     Type: AWS::S3::Bucket
+    Properties:
+      VersioningConfiguration: Enabled
 
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
@@ -106,9 +108,9 @@ Resources:
             Resource: !Join 
               - ''
               - - 'arn:aws:s3:::'
-                - !Ref JenkinsBucket
+                - !Ref KubeBucket
                 - /*
-      Bucket: !Ref JenkinsBucket
+      Bucket: !Ref KubeBucket
 
     
 
@@ -116,8 +118,8 @@ Outputs:
   FileStoreBucketName:
       Value: !Ref 'FileStore'
       Description: Name of the Amazon S3 bucket used to store image files.
-  JenkinsBucketName:
-      Value: !Ref 'JenkinsBucket'
+  KubeBucketName:
+      Value: !Ref 'KubeBucket'
       Description: Name of the Amazon S3 bucket used to store image files.
   DBAddress:
       Value: !GetAtt [PostgresDB, Endpoint.Address]
