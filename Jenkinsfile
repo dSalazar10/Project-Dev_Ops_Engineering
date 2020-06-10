@@ -6,6 +6,7 @@ pipeline {
         echo 'Workflow Start'
       }
     }
+
     stage('Lint') {
       parallel {
         stage('Lint Front End') {
@@ -60,7 +61,7 @@ npm run docker-lint'''
         stage('Build Front End') {
           steps {
             dir(path: 'src/front-end') {
-              sh './build_docker.sh'
+              sh 'sudo ./build_docker.sh'
             }
 
           }
@@ -69,7 +70,7 @@ npm run docker-lint'''
         stage('Build Reverse Proxy') {
           steps {
             dir(path: 'src/reverse-proxy') {
-              sh './build_docker.sh'
+              sh 'sudo ./build_docker.sh'
             }
 
           }
@@ -78,7 +79,7 @@ npm run docker-lint'''
         stage('Build RestAPI Feed') {
           steps {
             dir(path: 'src/restapi-feed') {
-              sh './build_docker.sh'
+              sh 'sudo ./build_docker.sh'
             }
 
           }
@@ -87,7 +88,7 @@ npm run docker-lint'''
         stage('Build RestAPI User') {
           steps {
             dir(path: 'src/restapi-user') {
-              sh './build_docker.sh'
+              sh 'sudo ./build_docker.sh'
             }
 
           }
