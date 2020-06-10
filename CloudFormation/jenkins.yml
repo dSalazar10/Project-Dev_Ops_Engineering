@@ -398,7 +398,12 @@ Outputs:
     Description: The URL of the LoadBalancer
     Value: !GetAtt [JenkinsLB, DNSName]
     Export:
-      Name: !Sub ${EnvironmentName}-LB-DNS
+      Name: !Sub ${EnvironmentName}-JLB-DNS
+  JenkinsCanonicalHostedZoneID:
+    Description: The ID of the Amazon Route 53 hosted zone associated with the load balancer.
+    Value: !GetAtt [JenkinsLB, CanonicalHostedZoneID]
+    Export:
+      Name: !Sub ${EnvironmentName}-JLB-ZID
   # BastionMasterIP:
   #   Description: The Private IP Address of the Jenkins Master Node
   #   Value:  !GetAtt [JenkinsMaster, PrivateIp]
