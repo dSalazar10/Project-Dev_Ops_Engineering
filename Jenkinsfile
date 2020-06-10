@@ -1,12 +1,6 @@
 pipeline {
   agent any
   stages {
-    stage('Start') {
-      steps {
-        echo 'Workflow Start'
-      }
-    }
-
     stage('Lint') {
       parallel {
         stage('Lint Front End') {
@@ -102,7 +96,7 @@ npm run docker-lint'''
         stage('Launch Front End') {
           steps {
             dir(path: 'src/front-end') {
-              sh './run_docker'
+              sh 'sudo ./run_docker'
             }
 
           }
@@ -111,7 +105,7 @@ npm run docker-lint'''
         stage('Launch Reverse Proxy') {
           steps {
             dir(path: 'src/reverse-proxy') {
-              sh './run_docker'
+              sh 'sudo ./run_docker'
             }
 
           }
@@ -120,7 +114,7 @@ npm run docker-lint'''
         stage('Launch RestAPI Feed') {
           steps {
             dir(path: 'src/restapi-feed') {
-              sh './run_docker'
+              sh 'sudo ./run_docker'
             }
 
           }
@@ -129,7 +123,7 @@ npm run docker-lint'''
         stage('Launch RestAPI User') {
           steps {
             dir(path: 'src/restapi-user') {
-              sh './run_docker'
+              sh 'sudo ./run_docker'
             }
 
           }
@@ -138,7 +132,7 @@ npm run docker-lint'''
         stage('Launch All') {
           steps {
             dir(path: 'src') {
-              sh 'docker-compose up'
+              sh 'sudo docker-compose up'
             }
 
           }
@@ -197,7 +191,7 @@ npm run docker-lint'''
         stage('Deploy Front End') {
           steps {
             dir(path: 'src/front-end') {
-              sh './upload_docker'
+              sh 'sudo ./upload_docker'
             }
 
           }
@@ -206,7 +200,7 @@ npm run docker-lint'''
         stage('Deploy Reverse Proxy') {
           steps {
             dir(path: 'src/reverse-proxy') {
-              sh './upload_docker'
+              sh 'sudo ./upload_docker'
             }
 
           }
@@ -215,7 +209,7 @@ npm run docker-lint'''
         stage('Deploy RestAPI Feed') {
           steps {
             dir(path: 'src/restapi-feed') {
-              sh './upload_docker'
+              sh 'sudo ./upload_docker'
             }
 
           }
@@ -224,18 +218,12 @@ npm run docker-lint'''
         stage('Deploy RestAPI User') {
           steps {
             dir(path: 'src/restapi-user') {
-              sh './upload_docker'
+              sh 'sudo ./upload_docker'
             }
 
           }
         }
 
-      }
-    }
-
-    stage('End') {
-      steps {
-        echo 'Workflow End'
       }
     }
 
