@@ -154,9 +154,9 @@ sudo docker-compose down'''
               sh '''
                   sudo docker login -u $HUB_USER -p $HUB_TOKEN
                   sudo docker push dsalazar10/udagram:reverse-proxy
-                  sudo docker push dsalazar10/udagram:front-end
-                  sudo docker push dsalazar10/udagram:restapi-feed
-                  sudo docker push dsalazar10/udagram:restapi-user
+                  sudo docker push dsalazar10/udagram:frontend
+                  sudo docker push dsalazar10/udagram:feed
+                  sudo docker push dsalazar10/udagram:user
               '''
             }
             }
