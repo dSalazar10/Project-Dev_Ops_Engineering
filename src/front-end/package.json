@@ -9,7 +9,7 @@
     "build": "ng build",
     "test": "ng test",
     "app-lint": "eslint --ignore-path .gitignore .",
-    "docker-lint": "hadolint Dockerfile",
+    "docker-lint": "hadolint --ignore DL3003 --ignore DL3006 Dockerfile",
     "e2e": "ng e2e"
   },
   "private": true,

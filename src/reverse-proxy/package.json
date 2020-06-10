@@ -6,7 +6,7 @@
   "scripts": {
     "nginx-lint": "nginx-linter",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "docker-lint": "hadolint Dockerfile"
+    "docker-lint": "hadolint --ignore DL3003 --ignore DL3006 Dockerfile"
   },
   "keywords": [],
   "repository": {

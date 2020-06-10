@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node .",
     "app-lint": "eslint --ignore-path .gitignore .",
-    "docker-lint": "hadolint Dockerfile",
+    "docker-lint": "hadolint --ignore DL3003 --ignore DL3006 Dockerfile",
     "tsc": "tsc",
     "dev": "ts-node-dev --respawn --transpileOnly ./src/server.ts",
     "prod": "tsc && node ./www/server.js",
