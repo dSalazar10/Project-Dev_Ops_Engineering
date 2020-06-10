@@ -88,11 +88,18 @@ Resources:
                 AllowedOrigins: ['*']
                 MaxAge: '3600'
 
-  # Access to the bucket will be with Signed URLs only
+  # Files will be encrytpted
   KubeBucket:
     Type: AWS::S3::Bucket
     Properties:
       VersioningConfiguration: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration: 
+          - KMSMasterKeyID: 
+              Fn::ImportValue: 
+                !Sub "${EnvironmentName}-KMS"
+            SSEAlgorithm: AES256
+          
 
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
