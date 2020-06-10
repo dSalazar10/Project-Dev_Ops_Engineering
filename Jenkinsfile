@@ -94,7 +94,8 @@ npm run docker-lint'''
     stage('Launch') {
       steps {
         dir(path: 'src') {
-          sh 'sudo docker-compose up'
+          sh '''docker-compose up -d
+docker-compose down'''
         }
 
       }
@@ -150,7 +151,7 @@ npm run docker-lint'''
         stage('Deploy Docker') {
           steps {
             dir(path: 'src') {
-              sh 'sudo ./upload_docker.sh '
+              sh 'sudo ./upload_docker.shÂ '
             }
 
           }
