@@ -1,0 +1,26 @@
+{
+  "name": "reverse-proxy",
+  "version": "1.0.0",
+  "description": "The will allow the front end to communicate with both back end modules abstracting the port numbers.",
+  "main": "nginx.conf",
+  "scripts": {
+    "nginx-lint": "nginx-linter",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dSalazar10/App-Udagram.git"
+  },
+  "author": "Daniel Salazar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dSalazar10/App-Udagram/issues"
+  },
+  "dependencies": {
+    "eslint": "^7.2.0"
+  },
+  "devDependencies": {
+    "nginx-linter": "^0.5.0"
+  }
+}
