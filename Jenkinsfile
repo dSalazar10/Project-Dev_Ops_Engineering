@@ -92,50 +92,9 @@ npm run docker-lint'''
     }
 
     stage('Launch') {
-      parallel {
-        stage('Launch Front End') {
-          steps {
-            dir(path: 'src/front-end') {
-              sh 'sudo ./run_docker'
-            }
-
-          }
-        }
-
-        stage('Launch Reverse Proxy') {
-          steps {
-            dir(path: 'src/reverse-proxy') {
-              sh 'sudo ./run_docker'
-            }
-
-          }
-        }
-
-        stage('Launch RestAPI Feed') {
-          steps {
-            dir(path: 'src/restapi-feed') {
-              sh 'sudo ./run_docker'
-            }
-
-          }
-        }
-
-        stage('Launch RestAPI User') {
-          steps {
-            dir(path: 'src/restapi-user') {
-              sh 'sudo ./run_docker'
-            }
-
-          }
-        }
-
-        stage('Launch All') {
-          steps {
-            dir(path: 'src') {
-              sh 'sudo docker-compose up'
-            }
-
-          }
+      steps {
+        dir(path: 'src') {
+          sh 'sudo docker-compose up'
         }
 
       }
@@ -191,7 +150,7 @@ npm run docker-lint'''
         stage('Deploy Front End') {
           steps {
             dir(path: 'src/front-end') {
-              sh 'sudo ./upload_docker'
+              sh 'sudoÂ ./upload_docker'
             }
 
           }
@@ -200,7 +159,7 @@ npm run docker-lint'''
         stage('Deploy Reverse Proxy') {
           steps {
             dir(path: 'src/reverse-proxy') {
-              sh 'sudo ./upload_docker'
+              sh 'sudoÂ ./upload_docker'
             }
 
           }
@@ -209,7 +168,7 @@ npm run docker-lint'''
         stage('Deploy RestAPI Feed') {
           steps {
             dir(path: 'src/restapi-feed') {
-              sh 'sudo ./upload_docker'
+              sh 'sudoÂ ./upload_docker'
             }
 
           }
@@ -218,7 +177,7 @@ npm run docker-lint'''
         stage('Deploy RestAPI User') {
           steps {
             dir(path: 'src/restapi-user') {
-              sh 'sudo ./upload_docker'
+              sh 'sudoÂ ./upload_docker'
             }
 
           }
