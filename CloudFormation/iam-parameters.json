@@ -2,5 +2,9 @@
     {
       "ParameterKey": "IAMPassword",
 		  "ParameterValue": "PassWord123"
+    },
+    {
+      "ParameterKey": "KubeIAMPassword",
+		  "ParameterValue": "PassWord123"
     }
 ]
