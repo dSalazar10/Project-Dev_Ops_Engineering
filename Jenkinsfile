@@ -1,6 +1,11 @@
 pipeline {
   agent any
   stages {
+    stage('Start') {
+      steps {
+        echo 'Workflow Start'
+      }
+    }
     stage('Lint') {
       parallel {
         stage('Lint Front End') {
