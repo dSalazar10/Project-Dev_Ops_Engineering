@@ -6,9 +6,8 @@ pipeline {
         stage('Lint Front End') {
           steps {
             dir(path: 'src/front-end') {
-              sh '''npm i
-npm run app-lint'''
-              sh 'run docker-lint'
+              sh '''npm i && npm run app-lint
+run docker-lint'''
             }
 
           }
@@ -17,7 +16,8 @@ npm run app-lint'''
         stage('Lint Reverse Proxy') {
           steps {
             dir(path: 'src/reverse-proxy') {
-              sh 'npm run nginx-lint'
+              sh '''npm i && npm run nginx-lint
+run docker-lint'''
             }
 
           }
@@ -26,7 +26,8 @@ npm run app-lint'''
         stage('Lint RestAPI Feed') {
           steps {
             dir(path: 'src/restapi-feed') {
-              sh 'npm run app-lint'
+              sh '''npm i && npm run app-lint
+run docker-lint'''
             }
 
           }
@@ -35,7 +36,8 @@ npm run app-lint'''
         stage('Lint RestAPI User') {
           steps {
             dir(path: 'src/restapi-user') {
-              sh 'npm run app-lint'
+              sh '''npm i && npm run app-lint
+run docker-lint'''
             }
 
           }
