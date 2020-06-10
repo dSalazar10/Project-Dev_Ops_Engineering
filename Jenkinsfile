@@ -151,7 +151,7 @@ sudo docker-compose down'''
         stage('Deploy Docker') {
           steps {
             dir(path: 'src') {
-              sh 'sudo ./upload_docker.sh '
+              sh 'sudo docker-compose push'
             }
 
           }
