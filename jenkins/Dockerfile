@@ -11,7 +11,7 @@ RUN apt-get update \
 RUN apt-get update \
     && apt-get install -y nodejs
 # Assign user to Docker group
-RUN usermod -aG docker jenkins
+RUN usermod -uG docker jenkins
 # Install Docker Compose
 RUN apt-get update \
     && curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
