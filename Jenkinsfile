@@ -152,7 +152,7 @@ sudo docker-compose down'''
           steps {
             withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'HUB_USER', passwordVariable: 'HUB_TOKEN')]) {                      
               sh '''
-                  docker login -u $HUB_USER -p $HUB_TOKEN 
+                  sudo docker login -u $HUB_USER -p $HUB_TOKEN 
                   sudo docker push dsalazar10/udagram:reverse-proxy
                   sudo docker push dsalazar10/udagram:front-end
                   sudo docker push dsalazar10/udagram:restapi-feed
