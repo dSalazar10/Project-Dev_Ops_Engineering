@@ -52,33 +52,39 @@ npm run docker-lint'''
 
     stage('Build') {
       parallel {
-        stage('Build 1') {
+        stage('Build Front End') {
           steps {
-            echo 'Build User'
+            dir(path: 'src/front-end') {
+              sh './build_docker.sh'
+            }
+
           }
         }
 
-        stage('Build 2') {
+        stage('Build Reverse Proxy') {
           steps {
-            echo 'Build Font End'
+            dir(path: 'src/reverse-proxy') {
+              sh './build_docker.sh'
+            }
+
           }
         }
 
-        stage('Build 3') {
+        stage('Build RestAPI Feed') {
           steps {
-            echo 'Build Reverse Proxy'
+            dir(path: 'src/restapi-feed') {
+              sh './build_docker.sh'
+            }
+
           }
         }
 
-        stage('Build 4') {
+        stage('Build RestAPI User') {
           steps {
-            echo 'Build Docker'
-          }
-        }
+            dir(path: 'src/restapi-user') {
+              sh './build_docker.sh'
+            }
 
-        stage('Build 5') {
-          steps {
-            echo 'Build Feed'
           }
         }
 
@@ -87,42 +93,57 @@ npm run docker-lint'''
 
     stage('Launch') {
       parallel {
-        stage('Launch 1') {
+        stage('Launch Front End') {
           steps {
-            echo 'Launch User'
+            dir(path: 'src/front-end') {
+              sh './run_docker'
+            }
+
           }
         }
 
-        stage('Launch 2') {
+        stage('Launch Reverse Proxy') {
           steps {
-            echo 'Launch Front End'
+            dir(path: 'src/reverse-proxy') {
+              sh './run_docker'
+            }
+
           }
         }
 
-        stage('Launch 3') {
+        stage('Launch RestAPI Feed') {
           steps {
-            echo 'Launch Reverse Proxy'
+            dir(path: 'src/restapi-feed') {
+              sh './run_docker'
+            }
+
           }
         }
 
-        stage('Launch 4') {
+        stage('Launch RestAPI User') {
           steps {
-            echo 'Launch Docker'
+            dir(path: 'src/restapi-user') {
+              sh './run_docker'
+            }
+
           }
         }
 
-        stage('Launch 5') {
+        stage('Launch All') {
           steps {
-            echo 'Launch Feed'
+            dir(path: 'src') {
+              sh 'docker-compose up'
+            }
+
           }
         }
 
       }
     }
 
-    stage('Test 1') {
+    stage('Test') {
       parallel {
-        stage('Test 1') {
+        stage('Test Front End') {
           steps {
             echo 'Test User'
             echo 'Integration Test'
@@ -132,7 +153,7 @@ npm run docker-lint'''
           }
         }
 
-        stage('Test 2') {
+        stage('Test Reverse Proxy') {
           steps {
             echo 'Test Front End'
             echo 'Integration Test'
@@ -142,7 +163,7 @@ npm run docker-lint'''
           }
         }
 
-        stage('Test 3') {
+        stage('Test RestAPI Feed') {
           steps {
             echo 'Test Reverse Proxy'
             echo 'Integration Test'
@@ -152,19 +173,9 @@ npm run docker-lint'''
           }
         }
 
-        stage('Test 4') {
+        stage('Test RestAPI User') {
           steps {
             echo 'Test Docker'
-            echo 'Integration Test'
-            echo 'Smoke Test'
-            echo 'End-To-End Test'
-            echo 'Test Results'
-          }
-        }
-
-        stage('Test 5') {
-          steps {
-            echo 'Test Feed'
             echo 'Integration Test'
             echo 'Smoke Test'
             echo 'End-To-End Test'
@@ -177,45 +188,48 @@ npm run docker-lint'''
 
     stage('Deploy') {
       parallel {
-        stage('Deploy 1') {
+        stage('Deploy Front End') {
           steps {
-            echo 'Deploy User'
+            dir(path: 'src/front-end') {
+              sh './upload_docker'
+            }
+
           }
         }
 
-        stage('Deploy 2') {
+        stage('Deploy Reverse Proxy') {
           steps {
-            echo 'Deploy Front End'
+            dir(path: 'src/reverse-proxy') {
+              sh './upload_docker'
+            }
+
           }
         }
 
-        stage('Deploy 3') {
+        stage('Deploy RestAPI Feed') {
           steps {
-            echo 'Deploy Reverse Proxy'
+            dir(path: 'src/restapi-feed') {
+              sh './upload_docker'
+            }
+
           }
         }
 
-        stage('Deploy 4') {
+        stage('Deploy RestAPI User') {
           steps {
-            echo 'Deploy Docker'
-          }
-        }
+            dir(path: 'src/restapi-user') {
+              sh './upload_docker'
+            }
 
-        stage('Deploy 5') {
-          steps {
-            echo 'Deploy '
           }
         }
 
       }
     }
 
-    stage('error') {
+    stage('End') {
       steps {
-        timestamps() {
-          sh 'date'
-        }
-
+        echo 'Workflow End'
       }
     }
 
