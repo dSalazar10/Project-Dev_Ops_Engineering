@@ -8,7 +8,7 @@ pipeline {
             dir(path: 'src/front-end') {
               sh '''npm i
 npm run app-lint
-run docker-lint'''
+npm run docker-lint'''
             }
 
           }
@@ -19,7 +19,7 @@ run docker-lint'''
             dir(path: 'src/reverse-proxy') {
               sh '''npm i
 npm run nginx-lint
-run docker-lint'''
+npm run docker-lint'''
             }
 
           }
@@ -30,7 +30,7 @@ run docker-lint'''
             dir(path: 'src/restapi-feed') {
               sh '''npm i
 npm run app-lint
-run docker-lint'''
+npm run docker-lint'''
             }
 
           }
@@ -41,7 +41,7 @@ run docker-lint'''
             dir(path: 'src/restapi-user') {
               sh '''npm i
 npm run app-lint
-run docker-lint'''
+npm run docker-lint'''
             }
 
           }
