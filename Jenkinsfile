@@ -6,7 +6,8 @@ pipeline {
         stage('Lint Front End') {
           steps {
             dir(path: 'src/front-end') {
-              sh 'npm run app-lint'
+              sh '''pwd
+npm run app-lint'''
               sh 'run docker-lint'
             }
 
