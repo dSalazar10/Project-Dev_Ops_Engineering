@@ -1,5 +1,9 @@
 [
     {
+		"ParameterKey": "EnvironmentName",
+		"ParameterValue": "UdagramDEV"
+    },
+    {
       "ParameterKey": "IAMPassword",
 		  "ParameterValue": "PassWord123"
     },

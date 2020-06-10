@@ -1,11 +1,15 @@
-  Parameters:
-    IAMPassword:
-      NoEcho: 'true'
-      Type: String
-      Description: New account password
-      MinLength: '1'
-      MaxLength: '41'
-      ConstraintDescription: the password must be between 1 and 41 characters
+Parameters:
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+
+  IAMPassword:
+    NoEcho: 'true'
+    Type: String
+    Description: New account password
+    MinLength: '1'
+    MaxLength: '41'
+    ConstraintDescription: the password must be between 1 and 41 characters
 
   KubeIAMPassword:
     NoEcho: 'true'
@@ -106,10 +110,76 @@ Resources:
       Users: 
       - !Ref 'KubeIAMUser'
 
-  KubeIAMKeys:
-    Type: AWS::IAM::AccessKey
-    Properties:
-      UserName: !Ref 'KubeIAMUser'
+  KubeKMSKey:
+    Type: AWS::KMS::Key
+    Properties: 
+      # A description of the CMK
+      Description: Encryption key for Kubernetes Operations.
+      # Specifies whether the customer master key (CMK) is enabled
+      Enabled: true
+      # Determines the cryptographic operations for which you can use the CMK
+      #KeyUsage: String
+      # Specifies the number of days in the waiting period before AWS KMS 
+      # deletes a CMK that has been removed from a CloudFormation stack
+      #PendingWindowInDays: Integer
+      Tags: 
+        - Key: KubeKMSKey
+          Value: KubeKMSKey
+      # Enables automatic rotation of the key material for the specified customer master key 
+      #EnableKeyRotation: Boolean
+      KeyPolicy: 
+          Version: '2012-10-17' 
+          Id: key-consolepolicy-3
+          Statement:
+          - Sid: Enable IAM User Permissions
+            Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::966289448295:root
+            Action: kms:*
+            Resource: "*"
+          - Sid: Allow access for Key Administrators
+            Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::966289448295:user/dsalazar10
+            Action:
+            - kms:Create*
+            - kms:Describe*
+            - kms:Enable*
+            - kms:List*
+            - kms:Put*
+            - kms:Update*
+            - kms:Revoke*
+            - kms:Disable*
+            - kms:Get*
+            - kms:Delete*
+            - kms:TagResource
+            - kms:UntagResource
+            - kms:ScheduleKeyDeletion
+            - kms:CancelKeyDeletion
+            Resource: "*"
+          - Sid: Allow use of the key
+            Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::966289448295:user/IAMStack-KubeIAMUser-18118H90MJVRZ
+            Action:
+            - kms:Encrypt
+            - kms:Decrypt
+            - kms:ReEncrypt*
+            - kms:GenerateDataKey*
+            - kms:DescribeKey
+            Resource: "*"
+          - Sid: Allow attachment of persistent resources
+            Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::966289448295:user/IAMStack-KubeIAMUser-18118H90MJVRZ
+            Action:
+            - kms:CreateGrant
+            - kms:ListGrants
+            - kms:RevokeGrant
+            Resource: "*"
+            Condition:
+              Bool:
+                kms:GrantIsForAWSResource: 'true'
 
 Outputs:
   JenkinsAccessKey:
@@ -118,9 +188,8 @@ Outputs:
   JenkinsSecretKey:
     Value: !GetAtt [JenkinsIAMKeys, SecretAccessKey]
     Description: AWSSecretAccessKey of  user
-  KubeAccessKey:
-    Value: !Ref 'KubeIAMKeys'
-    Description: AWSAccessKeyId of  user
-  KubeSecretKey:
-    Value: !GetAtt [KubeIAMKeys, SecretAccessKey]
-    Description: AWSSecretAccessKey of  user
+  KubeKMSKeyID:
+    Value: !Ref KubeKMSKey
+    Description: KMS Key for KOPS
+    Export:
+      Name: !Sub ${EnvironmentName}-KMS
