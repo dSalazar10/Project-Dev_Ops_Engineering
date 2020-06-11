@@ -1,4 +1,3 @@
-// Credentials: aws, docker-hub, and aqua-microscanner
 pipeline {
   agent any
   stages {
@@ -148,10 +147,13 @@ sudo docker-compose down'''
     }
 
     stage('Deploy') {
+      environment {
+        bucketurl = 'datastack-kubebucket-2qafg47vykl7'
+      }
       parallel {
         stage('Deploy Docker') {
           steps {
-            withCredentials([usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'HUB_USER', passwordVariable: 'HUB_TOKEN')]) {                      
+            withCredentials(bindings: [usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'HUB_USER', passwordVariable: 'HUB_TOKEN')]) {
               sh '''
                   sudo docker login -u $HUB_USER -p $HUB_TOKEN
                   sudo docker push dsalazar10/udagram:reverse-proxy
@@ -160,14 +162,16 @@ sudo docker-compose down'''
                   sudo docker push dsalazar10/udagram:user
               '''
             }
-            }
+
+          }
         }
 
         stage('Deploy Charts') {
           steps {
-            withAWS(region:'us-west-2',credentials:'aws-static') {
-              s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, bucket: 'datastack-jenkinsbucket-1auzhe5nk834v', file: 'Kubernetes')
+            withAWS(region: 'us-west-2', credentials: 'aws-static') {
+              s3Upload(bucket: 'bucketurl', file: 'Kubernetes')
             }
+
           }
         }
 
