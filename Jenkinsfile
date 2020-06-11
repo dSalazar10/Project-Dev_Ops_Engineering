@@ -17,7 +17,7 @@ pipeline {
 
         stage('Deploy IaC') {
           steps {
-            sh '''#!/bin/bash
+            sh ''']#!/bin/bash
 stackname="KubernetesStack"
 tempfile="kubernetes.yml"
 if ! aws cloudformation describe-stacks --region us-west-2 --stack-name $stackname
@@ -39,7 +39,8 @@ else
     if [ $status -ne 0 ]
     then
         # Don\'t fail for no-op update
-        if [[ $update_output == *"ValidationError"* && $update_output == *"No updates"* ]] ; then
+        if [[ $update_output == *"ValidationError"* && $update_output == *"No updates"* ]]
+        then
             echo -e "\\nFinished create/update - no updates to be performed"
             exit 0
         else
