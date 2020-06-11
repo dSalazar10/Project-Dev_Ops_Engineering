@@ -35,7 +35,8 @@ RUN apt-get update \
 # Install aws-cli
 RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" \
     && unzip awscli-bundle.zip \
-    && sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+    && sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws \
+    && sudo apt-get install -y groff
 # Install sudo
 RUN apt-get update \
       && apt-get install -y sudo \
