@@ -21,7 +21,7 @@ pipeline {
               sh '''stackname="KubernetesStack"
 tempfile="kubernetes.yml"
 # Check if the stack exists
-if [[ ! $(aws cloudformation describe-stacks --region us-west-2 --stack-name $stackname) ]]
+if [[!$(aws cloudformation describe-stacks --region us-west-2 --stack-name $stackname)]]
 then
 # No description means stack is empty
 echo "Creating Stack"
