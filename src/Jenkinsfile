@@ -1,0 +1,187 @@
+pipeline {
+  agent any
+  stages {
+    stage('Lint') {
+      parallel {
+        stage('Lint Front End') {
+          steps {
+            dir(path: 'src/front-end') {
+              sh '''npm i
+npm run app-lint
+npm run docker-lint'''
+            }
+
+          }
+        }
+
+        stage('Lint Reverse Proxy') {
+          steps {
+            dir(path: 'src/reverse-proxy') {
+              sh '''npm i
+npm run nginx-lint
+npm run docker-lint'''
+            }
+
+          }
+        }
+
+        stage('Lint RestAPI Feed') {
+          steps {
+            dir(path: 'src/restapi-feed') {
+              sh '''npm i
+npm run app-lint
+npm run docker-lint'''
+            }
+
+          }
+        }
+
+        stage('Lint RestAPI User') {
+          steps {
+            dir(path: 'src/restapi-user') {
+              sh '''npm i
+npm run app-lint
+npm run docker-lint'''
+            }
+
+          }
+        }
+
+      }
+    }
+
+    stage('Build') {
+      parallel {
+        stage('Build Front End') {
+          steps {
+            dir(path: 'src/front-end') {
+              sh 'sudo ./build_docker.sh'
+            }
+
+          }
+        }
+
+        stage('Build Reverse Proxy') {
+          steps {
+            dir(path: 'src/reverse-proxy') {
+              sh 'sudo ./build_docker.sh'
+            }
+
+          }
+        }
+
+        stage('Build RestAPI Feed') {
+          steps {
+            dir(path: 'src/restapi-feed') {
+              sh 'sudo ./build_docker.sh'
+            }
+
+          }
+        }
+
+        stage('Build RestAPI User') {
+          steps {
+            dir(path: 'src/restapi-user') {
+              sh 'sudo ./build_docker.sh'
+            }
+
+          }
+        }
+
+      }
+    }
+
+    stage('Launch') {
+      steps {
+        dir(path: 'src') {
+          sh '''sudo docker-compose up -d
+sudo docker-compose down'''
+        }
+
+      }
+    }
+
+    stage('Test') {
+      parallel {
+        stage('Test Front End') {
+          steps {
+            echo 'Test User'
+            echo 'Integration Test'
+            echo 'Smoke Test'
+            echo 'End-To-End Test'
+            echo 'Test Results'
+          }
+        }
+
+        stage('Test Reverse Proxy') {
+          steps {
+            echo 'Test Front End'
+            echo 'Integration Test'
+            echo 'Smoke Test'
+            echo 'End-To-End Test'
+            echo 'Test Results'
+          }
+        }
+
+        stage('Test RestAPI Feed') {
+          steps {
+            echo 'Test Reverse Proxy'
+            echo 'Integration Test'
+            echo 'Smoke Test'
+            echo 'End-To-End Test'
+            echo 'Test Results'
+          }
+        }
+
+        stage('Test RestAPI User') {
+          steps {
+            echo 'Test Docker'
+            echo 'Integration Test'
+            echo 'Smoke Test'
+            echo 'End-To-End Test'
+            echo 'Test Results'
+          }
+        }
+
+      }
+    }
+
+    stage('Deploy') {
+      environment {
+        bucketurl = 'datastack-kubebucket-2qafg47vykl7'
+      }
+      parallel {
+        stage('Deploy Docker') {
+          steps {
+            withCredentials(bindings: [usernamePassword(credentialsId: 'dockerHub', usernameVariable: 'HUB_USER', passwordVariable: 'HUB_TOKEN')]) {
+              sh '''
+                  sudo docker login -u $HUB_USER -p $HUB_TOKEN
+                  sudo docker push dsalazar10/udagram:reverse-proxy
+                  sudo docker push dsalazar10/udagram:frontend
+                  sudo docker push dsalazar10/udagram:feed
+                  sudo docker push dsalazar10/udagram:user
+              '''
+            }
+
+          }
+        }
+
+        stage('Deploy Charts') {
+          steps {
+<<<<<<< HEAD
+            withAWS(region:'us-west-2',credentials:'aws-static') {
+              s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, bucket: 'datastack-kubebucket-2qafg47vykl7', file: 'Kubernetes')
+=======
+            withAWS(region: 'us-west-2', credentials: 'aws-static') {
+              s3Upload(bucket: 'bucketurl', file: 'Kubernetes')
+>>>>>>> fcdfc59fb3cc770be990561f7037922df8ac0b6e
+            }
+
+          }
+        }
+
+      }
+    }
+
+  }
+}
