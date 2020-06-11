@@ -17,7 +17,8 @@ pipeline {
 
         stage('Deploy IaC') {
           steps {
-            sh '''stackname="KubernetesStack"
+            dir(path: 'CloudFormation') {
+              sh '''stackname="KubernetesStack"
 tempfile="kubernetes.yml"
 # Check if the stack exists
 if [[ ! $(aws cloudformation describe-stacks --region us-west-2 --stack-name $stackname) ]]
@@ -34,7 +35,7 @@ echo "Stack exists, attempting to update instead"
 update_output=$( \\
 aws cloudformation update-stack --stack-name $stackname --template-body file://$tempfile --parameters ParameterKey=EnvironmentName,ParameterValue=UdagramDEV --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region us-west-2 \\
 # Parse the StackId
-${@:3} Â 2>&1)
+${@:3} Â� 2>&1)
 status=$?
 trap \'exit\' ERR
 echo "${update_output}"
@@ -52,6 +53,8 @@ fi
 # Wait for stack update to complete
 aws cloudformation wait stack-create-complete --stack-name $stackname
 fi'''
+            }
+
           }
         }
 
