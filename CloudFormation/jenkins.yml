@@ -199,13 +199,6 @@ Resources:
           wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
           sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
           sudo usermod -aG docker ubuntu
-          sudo /bin/su -c "chmod 666 /var/run/docker.sock && echo $'{\n\t\"experimental\" : true,\n\t\"storage-driver\" : \"devicemapper\",\n\t\"storage-opts\" : [\"dm.basesize=50G\"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker" 
-          sudo apt-get update && sudo apt-get install -y default-jre 
-          sudo apt-get update && sudo apt-get install -y nginx
-          sudo apt-get update && sudo apt-get install -y jenkins
-          curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
-          sudo apt-get install -y nodejs
-          sudo systemctl start jenkins
 
 
   JenkinsGroup:
