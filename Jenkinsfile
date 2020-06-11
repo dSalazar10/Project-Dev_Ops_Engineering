@@ -32,7 +32,7 @@ else
 # Description means stack exists
 echo "Stack exists, attempting to update instead"
 # Update stack
-updateoutput=$(aws cloudformation update-stack --stack-name $stackname --template-body file://$tempfile --parameters ParameterKey=EnvironmentName,ParameterValue=UdagramDEV --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region us-west-2 ${@:3} 2>&1)
+updateoutput=$(aws cloudformation update-stack --stack-name $stackname --template-body file://$tempfile --parameters ParameterKey=EnvironmentName,ParameterValue=UdagramDEV --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region us-west-2) ${@:3} 2>&1
 status=$?
 trap \'exit\' ERR
 echo "${updateoutput}"
