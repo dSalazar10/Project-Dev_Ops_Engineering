@@ -14,7 +14,7 @@ sudo docker push dsalazar10/udagram:user'''
 
         stage('Deploy IaC') {
           steps {
-            sh 'aws --version'
+            sh 'aws cloudformation describe-stacks --stack-name DataStack'
           }
         }
 
