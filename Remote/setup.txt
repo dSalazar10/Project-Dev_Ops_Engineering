@@ -1,11 +1,3 @@
-echo "Jenkins Initial Admin Password:"
-sudo cat /var/lib/jenkins/secrets/initialAdminPassword
-echo "Press [return] to continue"
-read wait_flag
-
-echo "Setting Docker Daemon's storage-driver to aufs and basesize to 500GiB"
-sudo /bin/su -c "echo $'{\n\t\"storage-driver\" : \"aufs\",\n\t\"storage-opts\" : [\"dm.basesize=500G\"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker && chmod 666 /var/run/docker.sock" 
-
 echo "Expand the EC2's Volume to 500GiB"
 echo "https://us-west-2.console.aws.amazon.com/ec2/v2/home?region=us-west-2#Instances:sort=instanceId"
 echo "Press [return] to continue"
@@ -18,12 +10,5 @@ sudo resize2fs /dev/xvda1
 lsblk
 sudo /bin/su -c "echo $'{\n\t\"storage-driver\" : \"aufs\",\n\t\"storage-opts\" : [\"dm.basesize=500G\"]\n}' > /etc/docker/daemon.json && systemctl daemon-reload && systemctl restart docker && chmod 666 /var/run/docker.sock" 
 
-echo "Pulling Repo:"
-git clone https://github.com/dSalazar10/Project-Dev_Ops_Engineering.git
-
-echo "Building Docker images"
-cd Project-Dev_Ops_Engineering/src
-./build_docker.sh
-
-echo "Finally, log into docker hub:"
-docker login
+docker pull dsalazar10/udagram:jenkins
+docker run -it -p 8080:8080 -v /var/run/docker.sock:/var/run/docker.sock --rm dsalazar10/udagram:jenkins
