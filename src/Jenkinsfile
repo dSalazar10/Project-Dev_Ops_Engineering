@@ -168,15 +168,8 @@ sudo docker-compose down'''
 
         stage('Deploy Charts') {
           steps {
-<<<<<<< HEAD
             withAWS(region:'us-west-2',credentials:'aws-static') {
               s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true, bucket: 'datastack-kubebucket-2qafg47vykl7', file: 'Kubernetes')
-=======
-            withAWS(region: 'us-west-2', credentials: 'aws-static') {
-              s3Upload(bucket: 'bucketurl', file: 'Kubernetes')
->>>>>>> fcdfc59fb3cc770be990561f7037922df8ac0b6e
-            }
-
           }
         }
 
