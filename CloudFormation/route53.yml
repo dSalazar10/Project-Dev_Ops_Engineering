@@ -1,0 +1,38 @@
+Parameters:
+  EnvironmentName:
+    Description: An environment name that will be prefixed to resource names
+    Type: String
+    
+Resources:
+  DNS: 
+    Type: AWS::Route53::HostedZone
+    Properties: 
+      HostedZoneConfig: 
+        Comment: My hosted zone for danieljsalazar.org
+      Name: dev.danieljsalazar.org
+      VPCs: 
+        - 
+          VPCId: 
+            Fn::ImportValue:
+              !Sub "${EnvironmentName}-VPCID"
+          VPCRegion: 'us-west-2'
+      HostedZoneTags: 
+        - 
+          Key: OrgSite
+          Value: dev.danieljsalazar.org
+
+  RecordSet:
+    Type: AWS::Route53::RecordSetGroup
+    Properties:
+      HostedZoneName: danieljsalazar.org
+      Comment: Zone apex alias targeted to myELB LoadBalancer for use in Blue/Green deployment.
+      RecordSets:
+      - Name: dev.danieljsalazar.org
+        Type: A
+        AliasTarget:
+          HostedZoneId: 
+            Fn::ImportValue: 
+              !Sub "${EnvironmentName}-KLB-ZID"
+          DNSName: 
+            Fn::ImportValue: 
+              !Sub "${EnvironmentName}-KLB-DNS"

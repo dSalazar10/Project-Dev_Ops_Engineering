@@ -88,36 +88,26 @@ Resources:
                 AllowedOrigins: ['*']
                 MaxAge: '3600'
 
-  # Access to the bucket will be with Signed URLs only
-  JenkinsBucket:
+  # Files will be encrytpted
+  KubeBucket:
     Type: AWS::S3::Bucket
-
-  BucketPolicy:
-    Type: AWS::S3::BucketPolicy
     Properties:
-      PolicyDocument:
-        Id: MyPolicy
-        Version: 2012-10-17
-        Statement:
-          - Sid: PublicReadGetObject
-            Effect: Allow
-            Principal: '*'
-            Action: 's3:GetObject'
-            Resource: !Join 
-              - ''
-              - - 'arn:aws:s3:::'
-                - !Ref JenkinsBucket
-                - /*
-      Bucket: !Ref JenkinsBucket
-
-    
+      VersioningConfiguration:
+        Status: Enabled
+      BucketEncryption:
+        ServerSideEncryptionConfiguration: 
+          - ServerSideEncryptionByDefault:
+              KMSMasterKeyID: 
+                Fn::ImportValue: 
+                 !Sub "${EnvironmentName}-KMS"
+              SSEAlgorithm: aws:kms    
 
 Outputs:
   FileStoreBucketName:
       Value: !Ref 'FileStore'
       Description: Name of the Amazon S3 bucket used to store image files.
-  JenkinsBucketName:
-      Value: !Ref 'JenkinsBucket'
+  KubeBucketName:
+      Value: !Ref 'KubeBucket'
       Description: Name of the Amazon S3 bucket used to store image files.
   DBAddress:
       Value: !GetAtt [PostgresDB, Endpoint.Address]

@@ -76,6 +76,8 @@ function SetupStack {
     echo "3) IAM Stack"
     echo "4) Bastion Stack"
     echo "5) Jenkins Stack"
+    echo "6) Route53 Stack"
+    echo "7) Kubernetes Stack"
     echo "~:"
     read choice
     case $choice in
@@ -103,6 +105,16 @@ function SetupStack {
             stackname="JenkinsStack"
             tempfile="jenkins.yml"
             paramfile="jenkins-parameters.json"
+            ;;
+        6)
+            stackname="Route53Stack"
+            tempfile="route53.yml"
+            paramfile="route53-parameters.json"
+            ;;
+        7)
+            stackname="KubernetesStack"
+            tempfile="kubernetes.yml"
+            paramfile="kubernetes-parameters.json"
             ;;
     esac
 }

@@ -1,78 +1,9 @@
-Description:
-  Daniel Salazar | June 2020
-  This will create an EC2 instance and install Jenkins. The security group's CIDR IP should be changed to the IP of
-  the dev computer. This is used as an automation server to automate the tasks associated with CI/CD. 
-  
 Parameters:
   EnvironmentName:
     Description: An environment name that will be prefixed to resource names
     Type: String
 
-
 Resources:
-  # JenkinsMaster:
-  #   Type: AWS::EC2::Instance
-  #   Properties:
-  #     InstanceType: t2.micro
-  #     ImageId: ami-003634241a8fcdec0 # Ubuntu
-  #     # Ideally you want to only put the key during the time that you execute
-  #     # this script. Remove it immediately after
-  #     # Remember: If you push this, the key name will be public
-  #     KeyName: jenkins-key
-  #     SubnetId: 
-  #       Fn::ImportValue:
-  #         !Sub "${EnvironmentName}-PRI1-SN"
-  #     SecurityGroupIds:
-  #       - !Ref JenkinsMasterSecurityGroup
-  #     UserData:
-  #       Fn::Base64: !Sub |
-  #         #!/bin/bash
-  #           # Install Docker
-  #           sudo apt-get update && curl -fsSL https://get.docker.com -o get-docker.sh
-  #           sudo sh get-docker.sh
-  #           wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
-  #           sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-  #           sudo apt-get update && sudo apt-get install -y default-jre 
-  #           sudo apt-get update && sudo apt-get install -y nginx
-  #           sudo apt-get update && sudo apt-get install -y jenkins
-  #           curl -sL https://deb.nodesource.com/setup_12.x | sudo bash -
-  #           sudo apt-get install -y nodejs
-  #           sudo usermod -aG docker ubuntu
-  #           sudo chmod 666 /var/run/docker.sock
-  #           sudo systemctl start jenkins
-
-  # JenkinsMasterSecurityGroup:
-  #   Type: AWS::EC2::SecurityGroup
-  #   Properties: 
-  #     # A description for the security group
-  #     # String
-  #     GroupDescription: Allow ssh to/from our Jenkins host
-  #     SecurityGroupEgress: 
-  #     - IpProtocol: tcp
-  #       FromPort: 0
-  #       ToPort: 65535
-  #       CidrIp: 0.0.0.0/0
-  #     # The name of the security group
-  #     # GroupName: String
-  #     # The inbound rules associated with the security group
-  #     SecurityGroupIngress: 
-  #     - IpProtocol: tcp
-  #       FromPort: 8080
-  #       ToPort: 8080
-  #       CidrIp: 0.0.0.0/0
-  #     - IpProtocol: tcp
-  #       FromPort: 22
-  #       ToPort: 22
-  #       CidrIp: 0.0.0.0/0 # Change this to my IP Address
-  #     # Any tags assigned to the security group
-  #     #Tags: 
-  #     #  - Tag
-  #     # The ID of the VPC for the security group
-  #     # String
-  #     VpcId: 
-  #       Fn::ImportValue:
-  #         !Sub "${EnvironmentName}-VPCID"
-
   ELBSecGroup:
     Type: AWS::EC2::SecurityGroup
     Properties: 
@@ -110,12 +41,12 @@ Resources:
         Fn::ImportValue:
           !Sub "${EnvironmentName}-VPCID"
       
-  JenkinsSecurityGroup:
+  K8sSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties: 
       # A description for the security group
       # String
-      GroupDescription: Allow ssh to/from our Jenkins Server
+      GroupDescription: Allow ssh to/from our K8s Server
       # The name of the security group
       # GroupName: String
       # The outbound rules associated with the security group
@@ -145,7 +76,7 @@ Resources:
         Fn::ImportValue:
           !Sub "${EnvironmentName}-VPCID"
 
-  JenkinsLaunchConfig:
+  K8sLaunchConfig:
     Type: AWS::AutoScaling::LaunchConfiguration
     Properties: 
       #  specifies whether to assign a public IP address to the group's instances
@@ -163,7 +94,7 @@ Resources:
       # Specifies whether the launch configuration is optimized for EBS I/O (true) or not (false)
       #EbsOptimized: Boolean
       # Provides the name or the Amazon Resource Name (ARN) of the instance profile associated with the IAM role for the instance
-      #IamInstanceProfile: JenkinsIAMInstanceProfile
+      #IamInstanceProfile: K8sIAMInstanceProfile
       # Provides the unique ID of the Amazon Machine Image (AMI) that was assigned during registration
       ImageId: ami-003634241a8fcdec0
       # The ID of the Amazon EC2 instance you want to use to create the launch configuration
@@ -177,7 +108,7 @@ Resources:
       # Provides the name of the EC2 key pair
       # Ideally you want to setup the server and not have to modify anything
       # If it fails just destroy it and create a new one
-      KeyName: jenkins-key
+      KeyName: kube-key
       # The name of the launch configuration
       #LaunchConfigurationName: String
       # The tenancy of the instance, either default or dedicated
@@ -186,22 +117,26 @@ Resources:
       #RamDiskId: String
       # A list that contains the security groups to assign to the instances in the Auto Scaling group
       SecurityGroups:
-        - Ref: JenkinsSecurityGroup
+        - Ref: K8sSecurityGroup
       # The maximum hourly price to be paid for any Spot Instance launched to fulfill the request
       #SpotPrice: String
       # The Base64-encoded user data to make available to the launched EC2 instances
       UserData:
         Fn::Base64: !Sub |
           #!/bin/bash
-          # Install Docker
-          sudo apt-get update && curl -fsSL https://get.docker.com -o get-docker.sh
-          sudo sh get-docker.sh
-          wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key | sudo apt-key add -
-          sudo sh -c 'echo deb http://pkg.jenkins-ci.org/debian-stable binary/ > /etc/apt/sources.list.d/jenkins.list'
-          sudo usermod -aG docker ubuntu
+          # Install kubectl
+          sudo apt-get update && curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl
+          sudo chmod +x ./kubectl
+          sudo mv ./kubectl /usr/local/bin/kubectl
+          # Install aws-cli
+          pip install awscli
+          # Install kopts
+          sudo apt-get update && curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+          sudo chmod +x kops-linux-amd64
+          sudo mv kops-linux-amd64 /usr/local/bin/kops
 
 
-  JenkinsGroup:
+  K8sGroup:
     Type: AWS::AutoScaling::AutoScalingGroup
     Properties: 
       # The name of the Auto Scaling group
@@ -223,7 +158,7 @@ Resources:
       #InstanceId: String
       # The name of the launch configuration to use to launch instances
       LaunchConfigurationName:
-        Ref: JenkinsLaunchConfig
+        Ref: K8sLaunchConfig
       # The EC2 launch template to use to launch instances
       #LaunchTemplate: 
       #  LaunchTemplateSpecification
@@ -259,7 +194,7 @@ Resources:
       #  - TagProperty
       # A list of Amazon Resource Names (ARN) of target groups to associate with the Auto Scaling group
       TargetGroupARNs:
-      - Ref: JenkinsTargetGroup
+      - Ref: K8sTargetGroup
       # A policy or a list of policies that are used to select the instances to terminate
       #TerminationPolicies: 
       #  - String
@@ -268,7 +203,7 @@ Resources:
       - Fn::ImportValue: 
           !Sub "${EnvironmentName}-PRIV-NETS"
 
-  JenkinsTargetGroup:
+  K8sTargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties: 
       # Indicates whether health checks are enabled
@@ -324,10 +259,10 @@ Resources:
       DefaultActions:
       - Type: forward
         TargetGroupArn:
-          Ref: JenkinsTargetGroup
+          Ref: K8sTargetGroup
       # The Amazon Resource Name (ARN) of the load balancer
       LoadBalancerArn:
-        Ref: JenkinsLB
+        Ref: K8sLB
       # The port on which the load balancer is listening
       Port: '80'
       # The protocol for connections from clients to the load balancer
@@ -342,7 +277,7 @@ Resources:
       # forward, fixed-response, or redirect, and it must be the last action to be performed
       Actions:
         - Type: forward
-          TargetGroupArn: !Ref 'JenkinsTargetGroup'
+          TargetGroupArn: !Ref 'K8sTargetGroup'
       Conditions:
         - Field: path-pattern
           Values: [/]
@@ -357,7 +292,7 @@ Resources:
       # The rule priority. A listener can't have multiple rules with the same priority
       #Priority: Integer
 
-  JenkinsLB:
+  K8sLB:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties: 
       # The IP address type
@@ -387,18 +322,13 @@ Resources:
       #Type: String
 
 Outputs:
-  LoadBalancerDNS:
+  K8sDNS:
     Description: The URL of the LoadBalancer
-    Value: !GetAtt [JenkinsLB, DNSName]
+    Value: !GetAtt [K8sLB, DNSName]
     Export:
-      Name: !Sub ${EnvironmentName}-JLB-DNS
-  JenkinsCanonicalHostedZoneID:
+      Name: !Sub ${EnvironmentName}-KLB-DNS
+  K8sCanonicalHostedZoneID:
     Description: The ID of the Amazon Route 53 hosted zone associated with the load balancer.
-    Value: !GetAtt [JenkinsLB, CanonicalHostedZoneID]
+    Value: !GetAtt [K8sLB, CanonicalHostedZoneID]
     Export:
-      Name: !Sub ${EnvironmentName}-JLB-ZID
-  # BastionMasterIP:
-  #   Description: The Private IP Address of the Jenkins Master Node
-  #   Value:  !GetAtt [JenkinsMaster, PrivateIp]
-  #   Export:
-  #     Name: !Sub ${EnvironmentName}-JM-IP
+      Name: !Sub ${EnvironmentName}-KLB-ZID
