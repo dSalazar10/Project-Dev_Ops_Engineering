@@ -95,6 +95,9 @@ Resources:
         - Effect: Allow
           Action: ec2:*
           Resource: '*'
+        - Effect: Allow,
+          Action: clouddirectory:*,
+          Resource: "*"
 
   KubeIAMUser:
     Type: AWS::IAM::User
