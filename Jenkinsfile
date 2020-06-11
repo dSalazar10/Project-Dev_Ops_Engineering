@@ -19,33 +19,31 @@ pipeline {
           steps {
             sh '''stackname="KubernetesStack"
 tempfile="kubernetes.yml"
-if ! aws cloudformation describe-stacks --region us-west-2 --stack-name $stackname ; then
-Â  echo -e "\\nStack does not exist, creating ..."
-Â  aws cloudformation create-stack --stack-name $stackname --template-body file://$tempfile --parameters ParameterKey=EnvironmentName,ParameterValue=UdagramDEV --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region us-west-2
-Â  echo "Waiting for stack to be created ..."
-Â  aws cloudformation wait stack-create-complete --stack-name $stackname
+if [[ ! $(aws cloudformation describe-stacks --region us-west-2 --stack-name $stackname) ]]
+then
+    echo "Creating Stack"
+    aws cloudformation create-stack --stack-name $stackname --template-body file://$tempfile --parameters ParameterKey=EnvironmentName,ParameterValue=UdagramDEV --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region us-west-2
+    aws cloudformation wait stack-create-complete --stack-name $stackname
 else
-Â  echo -e "\\nStack exists, attempting update ..."
-Â  set +e
-Â Â update_output=$( \\
-Â  Â Â aws cloudformation update-stack --stack-name $stackname --template-body file://$tempfile --parameters ParameterKey=EnvironmentName,ParameterValue=UdagramDEV --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region us-west-2 \\
-Â Â Â Â ${@:3} Ã‚Â 2>&1)
-Â Â status=$?
-Â Â set -e
-Â Â echo "$update_output"
-
-Â Â if [ $status -ne 0 ]
-Â Â then
-Â Â Â Â # Don\'t fail for no-op update
-Â Â Â Â if [[ $update_output == *"ValidationError"* && $update_output == *"No updates"* ]]
-Â Â Â Â then
-Â Â Â Â Â Â echo -e "\\nFinished create/update - no updates to be performed"
-Â Â Â Â Â Â exit 0
-Â Â Â Â else
-Â Â Â Â Â Â exit $status
-Â Â Â Â fi
-Â Â fi
-Â Â aws cloudformation wait stack-create-complete --stack-name $stackname
+    echo "Stack exists, attempting to update instead"
+    update_output=$( \\
+        aws cloudformation update-stack --stack-name $stackname --template-body file://$tempfile --parameters ParameterKey=EnvironmentName,ParameterValue=UdagramDEV --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region us-west-2 \\
+        ${@:3}  2>&1)
+    status=$?
+    trap \'exit\' ERR
+    
+    echo "${update_output}"
+    if [[ $status -ne 0 ]]
+    then
+        if [[ $update_output == *"ValidationError"* && $update_output == *"No updates"* ]]
+        then
+            echo "Stack is already up to date"
+            exit 0
+        else
+            exit $status
+        fi
+    fi
+    aws cloudformation wait stack-create-complete --stack-name $stackname
 fi'''
           }
         }
