@@ -22,7 +22,7 @@ function CreateStack {
     echo "| CreateStk |"
     echo "~~~~~~~~~~~~~"
     echo ""
-    aws cloudformation create-stack --stack-name $stackname --template-body file://$tempfile --parameters file://$paramfile --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region us-west-2
+    aws cloudformation wait stack-create-complete --stack-name $stackname --template-body file://$tempfile --parameters file://$paramfile --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region us-west-2
     echo "Stack Creation Completed."
     sleep 1
 }
