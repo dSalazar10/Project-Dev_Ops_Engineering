@@ -1,3 +1,12 @@
+To ssh into a docker:
+docker exec -it $(docker container ls -q) bash
+
+To log into docker: 
+docker login --username dsalazar10
+
+To sign into aws cli:
+aws configure
+
 This will create a plugin file and fill it with some useful plugins and then automatically install it
 sudo touch /usr/share/jenkins/plugins.txt && sudo /bin/su -c "echo $'aqua-microscanner\nblueocean\npipeline-aws\nsaferestart' >> /usr/share/jenkins/plugins.txt" && /usr/local/bin/install-plugins.sh < /usr/share/jenkins/plugins.txt;
 
