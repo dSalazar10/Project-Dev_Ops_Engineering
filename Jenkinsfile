@@ -20,11 +20,8 @@ pipeline {
             dir(path: 'CloudFormation') {
               sh '''stackname="KubernetesStack"
 tempfile="kubernetes.yml"
-function check {
-return aws cloudformation describe-stacks --region us-west-2 --stack-name $stackname
-}
-check
-if [$? -ne 0]
+check=$(aws cloudformation describe-stacks --region us-west-2 --stack-name $stackname)
+if [$check -ne 0]
 then
 echo "Creating Stack"
 aws cloudformation create-stack --stack-name $stackname --template-body file://$tempfile --parameters ParameterKey=EnvironmentName,ParameterValue=UdagramDEV --capabilities "CAPABILITY_IAM" "CAPABILITY_NAMED_IAM" --region us-west-2
