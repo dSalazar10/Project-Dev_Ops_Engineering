@@ -19,20 +19,24 @@ RUN apt-get update && \
 RUN apt-get install -y docker-ce
 # Install Docker Compose
 RUN apt-get update \
-    && curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-RUN chmod +x /usr/local/bin/docker-compose
+    && curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose \
+    && chmod +x /usr/local/bin/docker-compose
 # Assign user to Docker group
 RUN usermod -a -G docker jenkins
 # Install NodeJS
 RUN apt-get update \
-    && curl -sL https://deb.nodesource.com/setup_12.x | bash -
-RUN apt-get update \
+    && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+    && apt-get update \
     && apt-get install -y nodejs
 # Install HadoLint
 RUN apt-get update \
-    && wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-Linux-x86_64
-RUN apt-get update \
+    && wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.6/hadolint-Linux-x86_64 \
     && chmod +x /bin/hadolint
+# Install aws-cli
+RUN curl "https://s3.amazonaws.com/aws-cli/awscli-bundle.zip" -o "awscli-bundle.zip" \
+    && unzip awscli-bundle.zip \
+    && sudo ./awscli-bundle/install -i /usr/local/aws -b /usr/local/bin/aws
+# Install sudo
 RUN apt-get update \
       && apt-get install -y sudo \
       && rm -rf /var/lib/apt/lists/*
