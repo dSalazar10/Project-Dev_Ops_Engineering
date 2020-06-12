@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   labels:
     service: frontend
-  name: frontend
+  name: frontend-green
 spec:
   replicas: 1 # demo uses 2
   selector:
@@ -14,7 +14,8 @@ spec:
       labels:
         name: frontend
         service: frontend
-        api: external        
+        api: external 
+        version: v3     
     spec:
       containers:
       - image: dsalazar10/udagram:frontend

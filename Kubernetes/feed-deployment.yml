@@ -5,7 +5,7 @@ metadata:
     service: feed
   name: feed
 spec:
-  replicas: 1 # demo uses 3
+  replicas: 2 # demo uses 3
   selector:
     matchLabels:
       name: feed
@@ -14,6 +14,7 @@ spec:
       labels:
         name: feed
         service: feed
+        version: v3
     spec:
       containers:
       - image: dsalazar10/udagram:feed

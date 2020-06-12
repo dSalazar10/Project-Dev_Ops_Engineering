@@ -134,14 +134,17 @@ Resources:
           sudo apt-get update && sudo apt-get install -y virtualbox \
           && sudo apt-get install -y virtualbox—ext–pack
           # Install Minikube
-          sudo apt-get update && sudo apt-get install minikube
-          minikube start
+          sudo apt-get update && curl -Lo minikube https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64 \
+          && chmod +x minikube \
+          && sudo mkdir -p /usr/local/bin/ \
+          && sudo install -y minikube /usr/local/bin/
           # Install aws-cli
-          pip install awscli
+          sudo apt install -y python-pip && pip install awscli
           # Install kopts
           sudo apt-get update && curl -LO https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
           sudo chmod +x kops-linux-amd64
           sudo mv kops-linux-amd64 /usr/local/bin/kops
+          minikube start
 
 
   K8sGroup:
