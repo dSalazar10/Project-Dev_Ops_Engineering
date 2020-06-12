@@ -4,14 +4,14 @@
 
 # Step 1:
 # This is your Docker ID/path
-dockerpath = "dsalazar10/cluster"
+dockerpath="dsalazar10/udagram:reverse-proxy"
 
 # Step 2
 # Run the Docker Hub container with kubernetes
-kubectl run app\
+kubectl run reverse-proxy\
     --generator=run-pod/v1\
     --image=${dockerpath}\
-    --port=80 --labels app=app
+    --port=80 --labels app=reverse-proxy
 
 # Step 3:
 # List kubernetes pods
