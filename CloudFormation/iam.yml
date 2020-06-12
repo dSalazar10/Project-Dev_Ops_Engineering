@@ -8,7 +8,6 @@ Parameters:
   MainUserARN:
     Description: The arn of the main user
     Type: String
-
   IAMPassword:
     NoEcho: 'true'
     Type: String
@@ -16,7 +15,6 @@ Parameters:
     MinLength: '1'
     MaxLength: '41'
     ConstraintDescription: the password must be between 1 and 41 characters
-
   KubeIAMPassword:
     NoEcho: 'true'
     Type: String
@@ -81,22 +79,16 @@ Resources:
       PolicyName: KubeIAMUsers
       # Adds full access to S3
       PolicyDocument:
-        Version: 2012-10-17
+        Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Action: s3:*
-          Resource: '*'
-        - Effect: Allow
-          Action: iam:*
-          Resource: '*'
-        - Effect: Allow
-          Action: route53:*
-          Resource: '*'
-        - Effect: Allow
-          Action: ec2:*
-          Resource: '*'
-        - Effect: Allow,
-          Action: clouddirectory:*,
+        - Sid: VisualEditor0
+          Effect: Allow
+          Action:
+          - iam:*
+          - s3:*
+          - route53:*
+          - ec2:*
+          - cloudformation:*
           Resource: "*"
 
   KubeIAMUser:

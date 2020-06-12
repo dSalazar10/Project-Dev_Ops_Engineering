@@ -1,3 +1,5 @@
+# The main use of the config file is for feed/user running
+# in pods on the cluster to consume the file to configure it's passwords.
 apiVersion: v1
 kind: ConfigMap
 data:

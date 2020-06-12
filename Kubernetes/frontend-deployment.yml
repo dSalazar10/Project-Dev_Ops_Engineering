@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    service: frontend
+  name: frontend-green
+spec:
+  replicas: 1 # demo uses 2
+  selector:
+    matchLabels:
+      name: frontend
+  template:
+    metadata:
+      labels:
+        name: frontend
+        service: frontend
+        api: external 
+        version: v3     
+    spec:
+      containers:
+      - image: dsalazar10/udagram:frontend
+        name: frontend
+        imagePullPolicy: Always          
+        ports:
+        - containerPort: 8100
+        # resources:
+        #   requests:
+        #     memory: "64Mi"
+        #     cpu: "250m"
+        #   limits:
+        #     memory: "1024Mi"
+        #     cpu: "500m"                
+      restartPolicy: Always
+

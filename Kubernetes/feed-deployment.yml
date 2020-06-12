@@ -1,27 +1,32 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    service: backend-feed
-  name: backend-feed
+    service: feed
+  name: feed
 spec:
-  replicas: 3
+  replicas: 2 # demo uses 3
+  selector:
+    matchLabels:
+      name: feed
   template:
     metadata:
       labels:
-        service: backend-feed
+        name: feed
+        service: feed
+        version: v3
     spec:
       containers:
-      - image: dsalazar10/udagram:user
-        name: backend-feed
+      - image: dsalazar10/udagram:feed
+        name: feed
         imagePullPolicy: Always  
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "250m"
-          limits:
-            memory: "1024Mi"
-            cpu: "500m"                  
+        # resources:
+        #   requests:
+        #     memory: "64Mi"
+        #     cpu: "250m"
+        #   limits:
+        #     memory: "1024Mi"
+        #     cpu: "500m"                  
         env:
         - name: URL
           valueFrom:
