@@ -125,9 +125,17 @@ Resources:
         Fn::Base64: !Sub |
           #!/bin/bash
           # Install kubectl
-          sudo apt-get update && curl -Lo kubectl https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/darwin/amd64/kubectl
-          sudo chmod +x ./kubectl
-          sudo mv ./kubectl /usr/local/bin/kubectl
+          sudo apt-get update && sudo apt-get install -y apt-transport-https gnupg2 \
+          && curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - \
+          && echo "deb https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee -a /etc/apt/sources.list.d/kubernetes.list \
+          && sudo apt-get update \
+          && sudo apt-get install -y kubectl
+          # Install VirtualBox
+          sudo apt-get update && sudo apt-get install -y virtualbox \
+          && sudo apt-get install -y virtualbox—ext–pack
+          # Install Minikube
+          sudo apt-get update && sudo apt-get install minikube
+          minikube start
           # Install aws-cli
           pip install awscli
           # Install kopts
