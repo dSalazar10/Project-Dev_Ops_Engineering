@@ -30,7 +30,8 @@ function Template {
     && kubectl apply -f feed-deployment.yml \
     && kubectl apply -f user-deployment.yml \
     && kubectl apply -f env-config-map.yml \
-    && kubectl apply -f env-secrets.yml
+    && kubectl apply -f env-secrets.yml \
+    && kubectl apply -f aws-secrets.yml
 
     # start a single instance of nginx
     $dname=reverse-proxy
