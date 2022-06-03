@@ -27,7 +27,7 @@
   "homepage": "https://github.com/dSalazar10/App-Udagram#readme",
   "dependencies": {
     "@angular/compiler": "^9.1.9",
-    "@angular/core": "^9.1.9",
+    "@angular/core": "^11.0.5",
     "@sentry/node": "^5.16.1",
     "@types/bcrypt": "^3.0.0",
     "@types/jsonwebtoken": "^8.5.0",
